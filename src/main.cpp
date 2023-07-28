@@ -7,13 +7,14 @@
 float P = 1;
 float D = 0.5;
 
-// Left offset: 7.25"
-// Right offset: 7.25"
+// Left offset: 5.8"
+// Right offset: 5.8"
+// Back offset: 0.5"
 // Wheel diameter: 3.25"
 // Wheel RPM: 360
 // Motor RPM: 600
 // Tracking center: (7.25", 7")
-odometry odom(7.25, 7.25, 3.25, 360, 600, pair<float, float>(7.25, 7));
+odometry odom(5.8, 5.8, 0.5, 3.25, 360, 600, pair<float, float>(7.25, 7));
 
 // float current_angle = 0;
 // float previous_angle = 0;
@@ -32,6 +33,7 @@ void initialize() {
 	master.clear();
 	
 	Task odom_angle_task([] { odom.get_current_angle(); });
+	Task odom_position_task([] { odom.get_current_position(); });
 
 }
 
@@ -143,9 +145,9 @@ void opcontrol() {
 		right.move(right_power);
 
 		if (index == 50) {
-			master.print(0, 0, "Degs: %f", odom.current_angle_deg);
+			master.print(0, 0, "X: %f", odom.absolute_position.first);
 			delay(50);
-			master.print(1, 0, "Rads: %f", odom.current_angle_rad);
+			master.print(1, 0, "Y: %f", odom.absolute_position.second);
 			index = 0;
 		}
 
