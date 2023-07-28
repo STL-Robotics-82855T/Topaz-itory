@@ -9,7 +9,7 @@ class odometry {
         float current_angle_rad;
         float inches_per_second;
         float inches_per_rotation;
-        pair<float, float> absolute_position;
+        pair<float, float> absolute_position = {0.0, 0.0};
 
         // Constructor
         odometry(float left_offset, float right_offset, float back_offset, float wheel_size, float wheel_rpm, float motor_rpm, pair<float, float> tracking_center) {
@@ -59,8 +59,9 @@ class odometry {
             float horizontal_distance_delta = 0;
 
             while (true) {
-                left_pos = left_front.get_position();
-                right_pos = right_front.get_position();
+                // 36:60 gearing
+                left_pos = left_front.get_position() * (60.0/36.0);
+                right_pos = right_front.get_position() * (60.0/36.0);
                 horizontal_pos = horizontal_tracker.get_position();
 
                 // ΔL and ΔR
@@ -68,7 +69,7 @@ class odometry {
                 right_side_distance_delta = (right_pos - prev_right_pos) * inches_per_rotation;
 
                 // ΔS
-                horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;
+                horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;   
 
                 // Δθ
                 angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
@@ -80,17 +81,17 @@ class odometry {
                 } else { // Arc
                     float x_step_1 = horizontal_distance_delta/angle_delta + back_offset;
                     float y_step_1 = right_side_distance_delta/angle_delta + right_offset;
-                    local_offset.first = x_step_1 * (2 * sin(current_angle_rad / 2));
-                    local_offset.second = y_step_1 * (2 * sin(current_angle_rad / 2));
+                    local_offset.first = x_step_1 * (2 * sin(angle_delta / 2));
+                    local_offset.second = y_step_1 * (2 * sin(angle_delta / 2));
                 }
 
                 float offset_theta = atan2f(local_offset.second, local_offset.first);
                 float offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
-                offset_theta = offset_theta - (current_angle_rad + angle_delta / 2);
+                offset_theta = offset_theta - current_angle_rad + angle_delta / 2;
                 local_offset.first = offset_radius * cos(offset_theta);
                 local_offset.second = offset_radius * sin(offset_theta);
 
-                absolute_position.first += local_offset.first;   
+                absolute_position.first += local_offset.first;
                 absolute_position.second += local_offset.second;
 
                 previous_angle = current_angle_rad;
@@ -111,7 +112,7 @@ class odometry {
         float wheel_size; // Diameter measured in inches
         float wheel_rpm;
         float motor_rpm;
-        pair<float, float> local_offset; // Measured in inches
+        pair<float, float> local_offset = {0.0, 0.0}; // Measured in inches
 
         float smart_radian_diff(float rad1, float rad2) {
             float diff = rad1 - rad2;

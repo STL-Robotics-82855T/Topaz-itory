@@ -24,6 +24,7 @@ void initialize() {
 	lcd::initialize();
 	left.tare_position();
 	right.tare_position();
+	horizontal_tracker.reset();
 
 
 	master.print(0, 0, "Calibrating IMUs...");
