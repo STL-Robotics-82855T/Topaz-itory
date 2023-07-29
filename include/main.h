@@ -78,11 +78,13 @@ void opcontrol(void);
 //#include <iostream>
 #include <vector>
 #include <utility>
+#include <cmath>
 #include <numeric>
 
 using std::pair;
 using std::vector;
 using std::accumulate;
+
 
 #define PI 3.14159265358979323846
 

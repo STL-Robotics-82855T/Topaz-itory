@@ -22,5 +22,6 @@ Imu imu_sensor1(10);
 Imu imu_sensor2(16);
 
 Rotation horizontal_tracker(2);
+Rotation right_tracker(3);
 
 #endif

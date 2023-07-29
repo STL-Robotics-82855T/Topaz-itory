@@ -13,14 +13,11 @@ class odometry {
         pair<float, float> absolute_position = {0.0, 0.0};
 
         // Constructor
-        odometry(float left_offset, float right_offset, float back_offset, float wheel_size, float wheel_rpm, float motor_rpm, pair<float, float> tracking_center) {
+        odometry(float left_offset, float right_offset, float back_offset, float wheel_size) {
             left_offset = left_offset;
             right_offset = right_offset;
             back_offset = back_offset;
             wheel_size = wheel_size;
-            wheel_rpm = wheel_rpm;
-            motor_rpm = motor_rpm;
-            inches_per_second = wheel_size * PI * wheel_rpm / 60;
             inches_per_rotation = wheel_size * PI;
         }
 
@@ -50,7 +47,7 @@ class odometry {
             float prev_left_pos = 0;
             float prev_right_pos = 0;
             float prev_horizontal_pos = 0;
-            float left_pos = 0;
+            // float left_pos = 0;
             float right_pos = 0;
             float horizontal_pos = 0;
             
@@ -67,22 +64,26 @@ class odometry {
 
             while (true) {
                 // 36:60 gearing
-                left_pos = left_front.get_position() * (36.0/60.0);
-                right_pos = right_front.get_position() * (36.0/60.0);
+                // left_pos = left_front.get_position() * (36.0/60.0);
+                // right_pos = right_front.get_position() * (36.0/60.0);
                 horizontal_pos = (float)horizontal_tracker.get_position()/36000.0;
+                right_pos = (float)right_tracker.get_position() / 36000.0;
 
                 // ΔL and ΔR
-                left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;
+                // left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;
                 right_side_distance_delta = (right_pos - prev_right_pos) * inches_per_rotation;
 
                 // ΔS
                 horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;
+                horizontal_distance_delta = horizontal_distance_delta-back_offset*angle_delta;
 
                 // Δθ
-                angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
+                // angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
+                angle_delta = current_angle_rad - previous_angle;
+
 
                 // Update position
-                if (angle_delta == 0 || (left_side_distance_delta == right_side_distance_delta)) { // Straight line or no movement
+                if (angle_delta == 0) { // Straight line or no movement
                     local_offset.first = horizontal_distance_delta;
                     local_offset.second = right_side_distance_delta;
                 } else { // Arc
@@ -102,7 +103,7 @@ class odometry {
                 absolute_position.second += local_offset.second;
 
                 previous_angle = current_angle_rad;
-                prev_left_pos = left_pos;
+                // prev_left_pos = left_pos;
                 prev_right_pos = right_pos;
                 prev_horizontal_pos = horizontal_pos;
 
