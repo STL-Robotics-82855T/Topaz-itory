@@ -21,6 +21,6 @@ MotorGroup right({right_front, right_top, right_bottom});
 Imu imu_sensor1(10);
 Imu imu_sensor2(16);
 
-Rotation horizontal_tracker(2, E_MOTOR_ENCODER_ROTATIONS);
+Rotation horizontal_tracker(2);
 
 #endif

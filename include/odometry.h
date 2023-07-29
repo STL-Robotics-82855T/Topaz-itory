@@ -31,6 +31,9 @@ class odometry {
                 float imu2 = imu_sensor2.get_rotation();
 
                 current_angle_deg = (imu1 + imu2) / 2;
+                // cut off to 3 decimal places
+                current_angle_deg = floorf(current_angle_deg * 1000) / 1000;
+
                 current_angle_rad = current_angle_deg * (PI / 180.0);
 
                 // master.print(0, 0, "IMU 1: %.2f\n", imu_sensor1.get_rotation()*(365.0/360.0)); // Offset factor due to some weirdness with the IMU
@@ -50,7 +53,7 @@ class odometry {
             float horizontal_pos = 0;
             
             // Measured in rad
-            float previous_angle;
+            float previous_angle = 0;
             float angle_delta;
 
             // Distances are measured in inches
@@ -60,9 +63,9 @@ class odometry {
 
             while (true) {
                 // 36:60 gearing
-                left_pos = left_front.get_position() * (60.0/36.0);
-                right_pos = right_front.get_position() * (60.0/36.0);
-                horizontal_pos = horizontal_tracker.get_position();
+                left_pos = left_front.get_position() * (36.0/60.0);
+                right_pos = right_front.get_position() * (36.0/60.0);
+                horizontal_pos = (float)horizontal_tracker.get_position()/36000.0;
 
                 // ΔL and ΔR
                 left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;

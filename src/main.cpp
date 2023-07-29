@@ -24,7 +24,7 @@ void initialize() {
 	lcd::initialize();
 	left.tare_position();
 	right.tare_position();
-	horizontal_tracker.reset();
+	horizontal_tracker.reset_position();
 
 
 	master.print(0, 0, "Calibrating IMUs...");
@@ -149,6 +149,10 @@ void opcontrol() {
 			master.print(0, 0, "X: %f", odom.absolute_position.first);
 			delay(50);
 			master.print(1, 0, "Y: %f", odom.absolute_position.second);
+			// delay(50);
+			// float test = (left_front.get_position() * (36.0/60.0))*odom.inches_per_rotation;
+			// float test = (float)horizontal_tracker.get_position();
+			// master.print(2, 0, "Dist: %f", test);
 			index = 0;
 		}
 
