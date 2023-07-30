@@ -7,7 +7,7 @@
 // Right offset: 5.8"
 // Back offset: 0.5"
 // Wheel diameter: 3.25"
-odometry odom(5.8, 5.8, 0.5, 3.25);
+odometry odom(6.02, 6.02, 0.73, 3.25);
 
 
 void initialize() {
@@ -16,7 +16,6 @@ void initialize() {
 	right.tare_position();
 	horizontal_tracker.reset_position();
 	right_tracker.reset_position();
-
 
 	master.print(0, 0, "Calibrating IMUs...");
 	imu_sensor1.reset(true);
@@ -90,5 +89,6 @@ void opcontrol() {
 
 		delay(5);
 	}
+	 
 
 }

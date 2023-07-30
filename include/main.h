@@ -84,7 +84,8 @@ void opcontrol(void);
 using std::pair;
 using std::vector;
 using std::accumulate;
-
+using std::cout;
+using std::endl;
 
 #define PI 3.14159265358979323846
 

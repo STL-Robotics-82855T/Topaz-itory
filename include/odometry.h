@@ -62,6 +62,8 @@ class odometry {
             float right_side_distance_delta = 0;
             float horizontal_distance_delta = 0;
 
+            int index = 0;
+
             while (true) {
                 // 36:60 gearing
                 // left_pos = left_front.get_position() * (36.0/60.0);
@@ -78,8 +80,7 @@ class odometry {
                 horizontal_distance_delta = horizontal_distance_delta-back_offset*angle_delta;
 
                 // Δθ
-                // angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
-                angle_delta = current_angle_rad - previous_angle;
+                angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
 
 
                 // Update position
@@ -91,12 +92,32 @@ class odometry {
                     local_offset.second = (right_side_distance_delta/angle_delta + right_offset) * (2 * sin(angle_delta / 2));
                 }
 
+
+
                 // Rotate offset vector to match robot's current heading
                 offset_theta = atan2f(local_offset.second, local_offset.first);
                 offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
-                offset_theta = offset_theta - current_angle_rad + angle_delta / 2;
+                
+                // if (index == 50) {
+                // cout << local_offset.first << " "  << local_offset.second << " " << offset_theta << endl;
+
+
+                // lcd::print(0, "theta (deg): %.2f", offset_theta*180/PI);
+                // delay(50);
+                // lcd::print(1, "X: %.2f", local_offset.first);
+                // delay(50);
+                // lcd::print(2, "Y: %.2f", local_offset.second);
+                // delay(500);
+                
+                
+                //     index = 0;
+                // }
+                // index++;
+
+                offset_theta -= current_angle_rad + angle_delta / 2;
                 local_offset.first = offset_radius * cos(offset_theta);
                 local_offset.second = offset_radius * sin(offset_theta);
+
 
                 // Update absolute position
                 absolute_position.first += local_offset.first;
