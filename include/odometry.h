@@ -37,7 +37,7 @@ class odometry {
                 // Task::delay(50);
                 // master.print(1, 0, "IMU 2: %.2f", imu_sensor2.get_rotation());
                 // Task::delay(50);
-                Task::delay(5);
+                delay(5);
             }
         }
 
@@ -128,7 +128,7 @@ class odometry {
                 prev_right_pos = right_pos;
                 prev_horizontal_pos = horizontal_pos;
 
-                Task::delay(5);
+                delay(5);
             }
         }
 

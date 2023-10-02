@@ -21,12 +21,12 @@ void initialize() {
 	// right_tracker.reset_position();
 	cata_tracker.reset_position();
 
-	master.print(0, 0, "Calibrating IMUs...");
-	imu_sensor1.reset(true);
-	delay(50);
-	imu_sensor2.reset(true);
-	delay(50);
-	master.clear();
+	// master.print(0, 0, "Calibrating IMUs...");
+	// imu_sensor1.reset(true);
+	// delay(50);
+	// imu_sensor2.reset(true);
+	// delay(50);
+	// master.clear();
 	
 	// Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
@@ -78,18 +78,18 @@ void opcontrol() {
 		left.move(left_power);
 		right.move(right_power);
 
-		if (index == 50) {
-			master.print(0, 0, "X: %f", odom.absolute_position.first);
-			delay(50);
-			master.print(1, 0, "Y: %f", odom.absolute_position.second);
-			delay(50);
-			// float test = (left_front.get_position() * (36.0/60.0))*odom.inches_per_rotation;
-			// float test = (float)right_tracker.get_position()/36000.0;
-			master.print(2, 0, "Dist: %f", odom.current_angle_deg);
-			index = 0;
-		}
+		// if (index == 50) {
+		// 	master.print(0, 0, "X: %f", odom.absolute_position.first);
+		// 	delay(50);
+		// 	master.print(1, 0, "Y: %f", odom.absolute_position.second);
+		// 	delay(50);
+		// 	// float test = (left_front.get_position() * (36.0/60.0))*odom.inches_per_rotation;
+		// 	// float test = (float)right_tracker.get_position()/36000.0;
+		// 	master.print(2, 0, "Dist: %f", odom.current_angle_deg);
+		// 	index = 0;
+		// }
 
-		index++;
+		// index++;
 
 		delay(5);
 	}
