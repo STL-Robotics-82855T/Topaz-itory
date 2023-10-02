@@ -18,10 +18,14 @@ Motor right_bottom(18, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 
 MotorGroup right({right_front, right_top, right_bottom});
 
+// Cata motor
+Motor cata_motor(8, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
+
 Imu imu_sensor1(10);
 Imu imu_sensor2(16);
 
-Rotation horizontal_tracker(2);
-Rotation right_tracker(3);
+// Rotation horizontal_tracker(2);
+// Rotation right_tracker(3);
+Rotation cata_tracker(4, true);
 
 #endif

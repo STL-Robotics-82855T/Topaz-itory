@@ -2,20 +2,24 @@
 #include "devices.h" // Defines motors, controller, sensors and helper functions
 #include "movement.h" // Defines movement class
 #include "odometry.h" // Defines odometry class
+#include "catapult.h" // The catapult functions
 
 // Left offset: 5.8"
 // Right offset: 5.8"
 // Back offset: 0.5"
 // Wheel diameter: 3.25"
 odometry odom(6.02, 6.02, 0.73, 3.25);
+catapult cata;
 
 
 void initialize() {
+	// set posititon of sensors to 0
 	lcd::initialize();
 	left.tare_position();
 	right.tare_position();
-	horizontal_tracker.reset_position();
-	right_tracker.reset_position();
+	// horizontal_tracker.reset_position();
+	// right_tracker.reset_position();
+	cata_tracker.reset_position();
 
 	master.print(0, 0, "Calibrating IMUs...");
 	imu_sensor1.reset(true);
@@ -24,9 +28,9 @@ void initialize() {
 	delay(50);
 	master.clear();
 	
-	Task odom_angle_task([] { odom.get_current_angle(); });
-	Task odom_position_task([] { odom.get_current_position(); });
-
+	// Task odom_angle_task([] { odom.get_current_angle(); });
+	// Task odom_position_task([] { odom.get_current_position(); });
+	Task catapult_rewind([] { cata.rewind_cata(); });
 	// turn_to_angle(90, true);
 }
 
@@ -92,3 +96,4 @@ void opcontrol() {
 	 
 
 }
+
