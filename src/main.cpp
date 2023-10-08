@@ -19,7 +19,7 @@ void initialize() {
 	right.tare_position();
 	// horizontal_tracker.reset_position();
 	// right_tracker.reset_position();
-	cata_tracker.reset_position();
+	// cata_tracker.reset_position();
 
 	// master.print(0, 0, "Calibrating IMUs...");
 	// imu_sensor1.reset(true);
@@ -30,7 +30,8 @@ void initialize() {
 	
 	// Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
-	Task catapult_rewind([] { cata.rewind_cata(); });
+	// Task catapult_rewind([] { cata.rewind_cata(); });
+	Task catapult_monitor([] { cata.start(); });
 	// turn_to_angle(90, true);
 }
 
