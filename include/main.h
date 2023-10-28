@@ -80,6 +80,7 @@ void opcontrol(void);
 #include <utility>
 #include <cmath>
 #include <numeric>
+#include <ctime>
 
 using std::pair;
 using std::vector;

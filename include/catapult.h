@@ -16,9 +16,6 @@ class catapult {
                 if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
                     cata_motor.move(127);
                 }
-                else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-                    cata_motor.move(-60);
-                }
                 else {
                     cata_motor.move(0);
                 }

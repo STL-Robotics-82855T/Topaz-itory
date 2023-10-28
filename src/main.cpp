@@ -1,38 +1,103 @@
 #include "main.h"
 #include "devices.h" // Defines motors, controller, sensors and helper functions
-#include "movement.h" // Defines movement class
-#include "odometry.h" // Defines odometry class
+#include "./movement/movement.h" // Defines movement class
+#include "./movement/odometry.h" // Defines odometry class
 #include "catapult.h" // The catapult functions
+
+#include "squiggles/squiggles.hpp" // The squiggles library for path planning
 
 // Left offset: 5.8"
 // Right offset: 5.8"
 // Back offset: 0.5"
 // Wheel diameter: 3.25"
+
+// Constants
 odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
+/*
+	--- Calculating Speed ---
+	pi * 3.25 in = 10.210176124 in // Distance travelled per full rotation
+	600 rpm geared with (36:60) = 360 rpm
+	360 rpm = 6 rps
+	6 rps * 10.210176124 in = 61.261056744 in/s
+	61.261056744 in/s / 12 in/ft = 5.105088062 ft/s
+	5.105088062 ft/s * 0.3048 m/ft = 1.556932505 m/s
+	
+	--- Calculating Torque ---
+	V5 motor 600rpm stall torque: 0.33 N*m
+	Gear ratio advantage: 60/36 = 1.666666667
+	0.33 N*m * 1.666666667 = 0.55 N*m stall torque
 
-void initialize() {
+	Using only 0.5 N*m for safety
+
+	--- Calculating Force ---
+	Force = torque / wheel radius
+	0.5 N*m / 0.0413 m(1.625 in) = 12.1 N
+
+	6 motors * 12.1 N = 72.6 N
+
+	Sum of forces = mass * acceleration
+
+	72.6 N = 4.24 kg * acceleration
+
+	--- Calculating Acceleration ---
+	72.6 N / 4.24 kg = 17.12 m/s^2
+
+	17.12 m/s^2 * 3.28084 ft/m = 56.2 ft/s^2
+
+	--- Calculating Jerk ---
+	Assuming 0.5 seconds to reach max acceleration
+	17.12 m/s^2 / 0.5 s = 34.24 m/s^3
+
+*/
+
+const double MAX_VELOCITY = 1.556932505; // m/s
+const double MAX_ACCELERATION = 17.12; // m/s^2
+const double MAX_JERK = 34.24; // m/s^3
+const double WHEELBASE = 11.9; // in
+
+const double inch_to_meter = 0.0254; // convert all inches to meters for squiggles
+const double feet_to_meter = 0.3048; // convert all feet to meters for squiggles
+
+squiggles::Constraints motion_constraints = squiggles::Constraints(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK);
+squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_constraints, std::make_shared<squiggles::TankModel>(WHEELBASE*inch_to_meter, motion_constraints));
+
+std::vector<squiggles::ProfilePoint> path = spline_generator.generate({squiggles::Pose(0.0, 0.0, 1.0),squiggles::Pose(4.0, 4.0, 1.0)});
+
+void reset_sensors() {
 	// set posititon of sensors to 0
 	lcd::initialize();
 	left.tare_position();
 	right.tare_position();
+
+
 	// horizontal_tracker.reset_position();
 	// right_tracker.reset_position();
 	// cata_tracker.reset_position();
 
-	// master.print(0, 0, "Calibrating IMUs...");
-	// imu_sensor1.reset(true);
-	// delay(50);
-	// imu_sensor2.reset(true);
-	// delay(50);
-	// master.clear();
-	
-	// Task odom_angle_task([] { odom.get_current_angle(); });
+
+	imu_sensor1.tare();
+	imu_sensor2.tare();
+
+	master.print(0, 0, "Calibrating IMUs...");
+	imu_sensor1.reset(false);
+	delay(50);
+	imu_sensor2.reset(true);
+	delay(50);
+	master.clear();
+}
+
+void initialize() {
+
+
+
+	reset_sensors();
+
+	Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
 	// Task catapult_rewind([] { cata.rewind_cata(); });
 	Task catapult_monitor([] { cata.start(); });
-	// turn_to_angle(90, true);
 }
 
 
@@ -42,27 +107,9 @@ void competition_initialize() {}
 
 void autonomous() {
 
-	// drive_forward(5);
-	// delay(400);
-	// turn_right_to_angle(90);
-	// delay(400);
-	// drive_forward(5);
-	// delay(400);
-	// turn_right_to_angle(90);
-	// delay(400);
-	// drive_forward(5);
-	// delay(400);
-	// turn_right_to_angle(90);
-	// delay(400);
-	// drive_forward(5);
-	// delay(400);
-	// turn_right_to_angle(90);
-	// delay(400);
-	// left.move(0);
-	// right.move(0);
-
-
 }
+
+
 
 void opcontrol() {
 
@@ -78,19 +125,6 @@ void opcontrol() {
 
 		left.move(left_power);
 		right.move(right_power);
-
-		// if (index == 50) {
-		// 	master.print(0, 0, "X: %f", odom.absolute_position.first);
-		// 	delay(50);
-		// 	master.print(1, 0, "Y: %f", odom.absolute_position.second);
-		// 	delay(50);
-		// 	// float test = (left_front.get_position() * (36.0/60.0))*odom.inches_per_rotation;
-		// 	// float test = (float)right_tracker.get_position()/36000.0;
-		// 	master.print(2, 0, "Dist: %f", odom.current_angle_deg);
-		// 	index = 0;
-		// }
-
-		// index++;
 
 		delay(5);
 	}
