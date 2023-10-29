@@ -61,6 +61,7 @@ const double inch_to_meter = 0.0254; // convert all inches to meters for squiggl
 const double feet_to_meter = 0.3048; // convert all feet to meters for squiggles
 
 squiggles::Constraints motion_constraints = squiggles::Constraints(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK);
+
 squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_constraints, std::make_shared<squiggles::TankModel>(WHEELBASE*inch_to_meter, motion_constraints));
 
 std::vector<squiggles::ProfilePoint> path = spline_generator.generate({squiggles::Pose(0.0, 0.0, 1.0),squiggles::Pose(4.0, 4.0, 1.0)});
@@ -95,7 +96,7 @@ void initialize() {
 	reset_sensors();
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
-	// Task odom_position_task([] { odom.get_current_position(); });
+	Task odom_position_task([] { odom.get_current_position(); });
 	// Task catapult_rewind([] { cata.rewind_cata(); });
 	Task catapult_monitor([] { cata.start(); });
 }
@@ -106,6 +107,22 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+
+	time_t start_time = std::time(nullptr); // Get the current time in seconds
+	for (squiggles::ProfilePoint &point: path) {
+		vector<double> wheel_velocities = point.wheel_velocities;
+		double left_velocity = wheel_velocities[0];
+		double right_velocity = wheel_velocities[1];
+		double time = point.time;
+
+		// Hopefully this works :O
+		double left_power = left_velocity / MAX_VELOCITY * 127;
+		double right_power = right_velocity / MAX_VELOCITY * 127;
+
+		left.move(left_power);
+		right.move(right_power);
+
+	}
 
 }
 

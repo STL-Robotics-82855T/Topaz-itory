@@ -45,90 +45,91 @@ public:
         }
     }
 
-    // /// @brief Gets the cyurrent direction of the robot, updates every 5ms
-    // void get_current_position() {
-    //     // Positions are measured in number of motor rotations (not degrees)
-    //     float prev_left_pos = 0;
-    //     float prev_right_pos = 0;
-    //     float prev_horizontal_pos = 0;
-    //     // float left_pos = 0;
-    //     float right_pos = 0;
-    //     float horizontal_pos = 0;
+    /// @brief Gets the cyurrent direction of the robot, updates every 10ms
+    void get_current_position() {
+        // Positions are measured in number of motor rotations (not degrees)
+        float prev_left_pos = 0;
+        float prev_right_pos = 0;
+        float prev_horizontal_pos = 0;
+        float left_pos = 0;
+        float right_pos = 0;
+        float horizontal_pos = 0;
 
-    //     // Measured in rad
-    //     float previous_angle = 0;
-    //     float angle_delta;
-    //     float offset_theta = 0;
-    //     float offset_radius = 0;
+        // Measured in rad
+        float previous_angle = 0;
+        float angle_delta;
+        float offset_theta = 0;
+        float offset_radius = 0;
 
-    //     // Distances are measured in inches
-    //     float left_side_distance_delta = 0;
-    //     float right_side_distance_delta = 0;
-    //     float horizontal_distance_delta = 0;
+        // Distances are measured in inches
+        float left_side_distance_delta = 0;
+        float right_side_distance_delta = 0;
+        float horizontal_distance_delta = 0;
 
-    //     int index = 0;
+        int index = 0;
 
-    //     while (true) {
-    //         // 36:60 gearing
-    //         // left_pos = left_front.get_position() * (36.0/60.0);
-    //         // right_pos = right_front.get_position() * (36.0/60.0);
-    //         horizontal_pos = (float)horizontal_tracker.get_position()/36000.0;
-    //         right_pos = (float)right_tracker.get_position() / 36000.0;
+        while (true) {
+            // 36:60 gearing
+            left_pos = left_front_bottom.get_position() * (36.0/60.0);
+            right_pos = right_front_bottom.get_position() * (36.0/60.0);
 
-    //         // ΔL and ΔR
-    //         // left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;
-    //         right_side_distance_delta = (right_pos - prev_right_pos) * inches_per_rotation;
+            // horizontal_pos = (float)horizontal_tracker.get_position()/36000.0;
+            // right_pos = (float)right_tracker.get_position() / 36000.0;
 
-    //         // ΔS
-    //         horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;
-    //         horizontal_distance_delta = horizontal_distance_delta-back_offset*angle_delta;
+            // ΔL and ΔR
+            // left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;
+            right_side_distance_delta = (right_pos - prev_right_pos) * inches_per_rotation;
 
-    //         // Δθ
-    //         angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
+            // ΔS
+            horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;
+            horizontal_distance_delta = horizontal_distance_delta-back_offset*angle_delta;
 
-    //         // Update position
-    //         if (angle_delta == 0) { // Straight line or no movement
-    //             local_offset.first = horizontal_distance_delta;
-    //             local_offset.second = right_side_distance_delta;
-    //         } else { // Arc
-    //             local_offset.first = (horizontal_distance_delta/angle_delta + back_offset) * (2 * sin(angle_delta / 2));
-    //             local_offset.second = (right_side_distance_delta/angle_delta + right_offset) * (2 * sin(angle_delta / 2));
-    //         }
+            // Δθ
+            angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
 
-    //         // Rotate offset vector to match robot's current heading
-    //         offset_theta = atan2f(local_offset.second, local_offset.first);
-    //         offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
+            // Update position
+            if (angle_delta == 0) { // Straight line or no movement
+                local_offset.first = horizontal_distance_delta;
+                local_offset.second = right_side_distance_delta;
+            } else { // Arc
+                local_offset.first = (horizontal_distance_delta/angle_delta + back_offset) * (2 * sin(angle_delta / 2));
+                local_offset.second = (right_side_distance_delta/angle_delta + right_offset) * (2 * sin(angle_delta / 2));
+            }
 
-    //         // if (index == 50) {
-    //         // cout << local_offset.first << " "  << local_offset.second << " " << offset_theta << endl;
+            // Rotate offset vector to match robot's current heading
+            offset_theta = atan2f(local_offset.second, local_offset.first);
+            offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
 
-    //         // lcd::print(0, "theta (deg): %.2f", offset_theta*180/PI);
-    //         // delay(50);
-    //         // lcd::print(1, "X: %.2f", local_offset.first);
-    //         // delay(50);
-    //         // lcd::print(2, "Y: %.2f", local_offset.second);
-    //         // delay(500);
+            if (index == 50) {
+                cout << local_offset.first << " "  << local_offset.second << " " << offset_theta << endl;
 
-    //         //     index = 0;
-    //         // }
-    //         // index++;
+                lcd::print(0, "theta (deg): %.2f", offset_theta*180/PI);
+                delay(50);
+                lcd::print(1, "X: %.2f", local_offset.first);
+                delay(50);
+                lcd::print(2, "Y: %.2f", local_offset.second);
+                delay(500);
 
-    //         offset_theta -= current_angle_rad + angle_delta / 2;
-    //         local_offset.first = offset_radius * cos(offset_theta);
-    //         local_offset.second = offset_radius * sin(offset_theta);
+                index = 0;
+            }
+            index++;
 
-    //         // Update absolute position
-    //         absolute_position.first += local_offset.first;
-    //         absolute_position.second += local_offset.second;
+            offset_theta -= current_angle_rad + angle_delta / 2;
+            local_offset.first = offset_radius * cos(offset_theta);
+            local_offset.second = offset_radius * sin(offset_theta);
 
-    //         previous_angle = current_angle_rad;
-    //         // prev_left_pos = left_pos;
-    //         prev_right_pos = right_pos;
-    //         prev_horizontal_pos = horizontal_pos;
+            // Update absolute position
+            absolute_position.first += local_offset.first;
+            absolute_position.second += local_offset.second;
 
-    //         delay(5);
-    //     }
-    // }
+            previous_angle = current_angle_rad;
+            // prev_left_pos = left_pos;
+            prev_right_pos = right_pos;
+            prev_horizontal_pos = horizontal_pos;
+
+            delay(10);
+        }
+    }
 
 private:
     // Offsets are measured in inches
