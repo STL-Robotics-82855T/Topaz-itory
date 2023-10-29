@@ -108,12 +108,18 @@ void competition_initialize() {}
 
 void autonomous() {
 
-	time_t start_time = std::time(nullptr); // Get the current time in seconds
-	for (squiggles::ProfilePoint &point: path) {
+	// time_t start_time = std::time(nullptr); // Get the current time in seconds
+	
+	int path_size = path.size();
+
+	for (int index = 0; index < path_size; index++) {
+		squiggles::ProfilePoint point = path[index];
 		vector<double> wheel_velocities = point.wheel_velocities;
 		double left_velocity = wheel_velocities[0];
 		double right_velocity = wheel_velocities[1];
-		double time = point.time;
+		double last_time = point.time;
+		double next_time = path[std::min(index + 1, path_size)].time;
+		double wait_time = next_time - last_time;
 
 		// Hopefully this works :O
 		double left_power = left_velocity / MAX_VELOCITY * 127;
@@ -121,6 +127,8 @@ void autonomous() {
 
 		left.move(left_power);
 		right.move(right_power);
+
+		delay(wait_time * 1000);
 
 	}
 
