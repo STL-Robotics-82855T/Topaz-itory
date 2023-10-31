@@ -13,33 +13,33 @@
 #include "physicalmodel/physicalmodel.hpp"
 
 namespace squiggles {
-class TankModel : public PhysicalModel {
-  public:
-  /**
-   * Defines a model of a tank drive or differential drive robot.
-   *
-   * @param itrack_width The distance between the the wheels on each side of the
-   *                     robot in meters.
-   * @param ilinear_constraints The maximum values for the robot's movement.
-   */
-  TankModel(double itrack_width, Constraints ilinear_constraints);
+	class TankModel : public PhysicalModel {
+		public:
+			/**
+			 * Defines a model of a tank drive or differential drive robot.
+			 *
+			 * @param itrack_width The distance between the the wheels on each side of the
+			 *                     robot in meters.
+			 * @param ilinear_constraints The maximum values for the robot's movement.
+			 */
+			TankModel(double itrack_width, Constraints ilinear_constraints);
 
-  Constraints
-  constraints(const Pose pose, double curvature, double vel) override;
+			Constraints
+				constraints(const Pose pose, double curvature, double vel) override;
 
-  std::vector<double> linear_to_wheel_vels(double lin_vel,
-                                           double curvature) override;
+			std::vector<double> linear_to_wheel_vels(double lin_vel,
+					double curvature) override;
 
-  std::string to_string() const override;
+			std::string to_string() const override;
 
-  private:
-  double vel_constraint(const Pose pose, double curvature, double vel);
-  std::tuple<double, double>
-  accel_constraint(const Pose pose, double curvature, double vel) const;
+		private:
+			double vel_constraint(const Pose pose, double curvature, double vel);
+			std::tuple<double, double>
+				accel_constraint(const Pose pose, double curvature, double vel) const;
 
-  double track_width;
-  Constraints linear_constraints;
-};
+			double track_width;
+			Constraints linear_constraints;
+	};
 } // namespace squiggles
 
 #endif

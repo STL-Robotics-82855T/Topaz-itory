@@ -15,66 +15,66 @@
 #include <vector>
 
 namespace okapi {
-class PIDTuner {
-  public:
-  struct Output {
-    double kP, kI, kD;
-  };
+	class PIDTuner {
+		public:
+			struct Output {
+				double kP, kI, kD;
+			};
 
-  PIDTuner(const std::shared_ptr<ControllerInput<double>> &iinput,
-           const std::shared_ptr<ControllerOutput<double>> &ioutput,
-           const TimeUtil &itimeUtil,
-           QTime itimeout,
-           std::int32_t igoal,
-           double ikPMin,
-           double ikPMax,
-           double ikIMin,
-           double ikIMax,
-           double ikDMin,
-           double ikDMax,
-           std::size_t inumIterations = 5,
-           std::size_t inumParticles = 16,
-           double ikSettle = 1,
-           double ikITAE = 2,
-           const std::shared_ptr<Logger> &ilogger = Logger::getDefaultLogger());
+			PIDTuner(const std::shared_ptr<ControllerInput<double>> &iinput,
+					const std::shared_ptr<ControllerOutput<double>> &ioutput,
+					const TimeUtil &itimeUtil,
+					QTime itimeout,
+					std::int32_t igoal,
+					double ikPMin,
+					double ikPMax,
+					double ikIMin,
+					double ikIMax,
+					double ikDMin,
+					double ikDMax,
+					std::size_t inumIterations = 5,
+					std::size_t inumParticles = 16,
+					double ikSettle = 1,
+					double ikITAE = 2,
+					const std::shared_ptr<Logger> &ilogger = Logger::getDefaultLogger());
 
-  virtual ~PIDTuner();
+			virtual ~PIDTuner();
 
-  virtual Output autotune();
+			virtual Output autotune();
 
-  protected:
-  static constexpr double inertia = 0.5;   // Particle inertia
-  static constexpr double confSelf = 1.1;  // Self confidence
-  static constexpr double confSwarm = 1.2; // Particle swarm confidence
-  static constexpr int increment = 5;
-  static constexpr int divisor = 5;
-  static constexpr QTime loopDelta = 10_ms; // NOLINT
+		protected:
+			static constexpr double inertia = 0.5;   // Particle inertia
+			static constexpr double confSelf = 1.1;  // Self confidence
+			static constexpr double confSwarm = 1.2; // Particle swarm confidence
+			static constexpr int increment = 5;
+			static constexpr int divisor = 5;
+			static constexpr QTime loopDelta = 10_ms; // NOLINT
 
-  struct Particle {
-    double pos, vel, best;
-  };
+			struct Particle {
+				double pos, vel, best;
+			};
 
-  struct ParticleSet {
-    Particle kP, kI, kD;
-    double bestError;
-  };
+			struct ParticleSet {
+				Particle kP, kI, kD;
+				double bestError;
+			};
 
-  std::shared_ptr<Logger> logger;
-  TimeUtil timeUtil;
-  std::shared_ptr<ControllerInput<double>> input;
-  std::shared_ptr<ControllerOutput<double>> output;
+			std::shared_ptr<Logger> logger;
+			TimeUtil timeUtil;
+			std::shared_ptr<ControllerInput<double>> input;
+			std::shared_ptr<ControllerOutput<double>> output;
 
-  const QTime timeout;
-  const std::int32_t goal;
-  const double kPMin;
-  const double kPMax;
-  const double kIMin;
-  const double kIMax;
-  const double kDMin;
-  const double kDMax;
-  const std::size_t numIterations;
-  const std::size_t numParticles;
-  const double kSettle;
-  const double kITAE;
-};
+			const QTime timeout;
+			const std::int32_t goal;
+			const double kPMin;
+			const double kPMax;
+			const double kIMin;
+			const double kIMax;
+			const double kDMin;
+			const double kDMax;
+			const std::size_t numIterations;
+			const std::size_t numParticles;
+			const double kSettle;
+			const double kITAE;
+	};
 } // namespace okapi

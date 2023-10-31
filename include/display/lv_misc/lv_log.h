@@ -10,9 +10,9 @@
 extern "C" {
 #endif
 
-/*********************
- *      INCLUDES
- *********************/
+	/*********************
+	 *      INCLUDES
+	 *********************/
 #ifdef LV_CONF_INCLUDE_SIMPLE
 #include "lv_conf.h"
 #else
@@ -20,11 +20,11 @@ extern "C" {
 #endif
 #include <stdint.h>
 
-/*********************
- *      DEFINES
- *********************/
+	/*********************
+	 *      DEFINES
+	 *********************/
 
-/*Possible log level. For compatibility declare it independently from `USE_LV_LOG`*/
+	/*Possible log level. For compatibility declare it independently from `USE_LV_LOG`*/
 
 #define LV_LOG_LEVEL_TRACE 0     /*A lot of logs to give detailed information*/
 #define LV_LOG_LEVEL_INFO  1     /*Log important events*/
@@ -32,37 +32,37 @@ extern "C" {
 #define LV_LOG_LEVEL_ERROR 3     /*Only critical issue, when the system may fail*/
 #define _LV_LOG_LEVEL_NUM  4
 
-typedef int8_t lv_log_level_t;
+	typedef int8_t lv_log_level_t;
 
 #if USE_LV_LOG
-/**********************
- *      TYPEDEFS
- **********************/
+	/**********************
+	 *      TYPEDEFS
+	 **********************/
 
 
-/**********************
- * GLOBAL PROTOTYPES
- **********************/
+	/**********************
+	 * GLOBAL PROTOTYPES
+	 **********************/
 
-/**
- * Register custom print (or anything else) function to call when log is added
- * @param f a function pointer:
- *          `void my_print (lv_log_level_t level, const char * file, uint32_t line, const char * dsc)`
- */
-void lv_log_register_print(void f(lv_log_level_t, const char *, uint32_t,  const char *));
+	/**
+	 * Register custom print (or anything else) function to call when log is added
+	 * @param f a function pointer:
+	 *          `void my_print (lv_log_level_t level, const char * file, uint32_t line, const char * dsc)`
+	 */
+	void lv_log_register_print(void f(lv_log_level_t, const char *, uint32_t,  const char *));
 
-/**
- * Add a log
- * @param level the level of log. (From `lv_log_level_t` enum)
- * @param file name of the file when the log added
- * @param line line number in the source code where the log added
- * @param dsc description of the log
- */
-void lv_log_add(lv_log_level_t level, const char * file, int line, const char * dsc);
+	/**
+	 * Add a log
+	 * @param level the level of log. (From `lv_log_level_t` enum)
+	 * @param file name of the file when the log added
+	 * @param line line number in the source code where the log added
+	 * @param dsc description of the log
+	 */
+	void lv_log_add(lv_log_level_t level, const char * file, int line, const char * dsc);
 
-/**********************
- *      MACROS
- **********************/
+	/**********************
+	 *      MACROS
+	 **********************/
 
 #define LV_LOG_TRACE(dsc)   lv_log_add(LV_LOG_LEVEL_TRACE, __FILE__, __LINE__, dsc);
 #define LV_LOG_INFO(dsc)    lv_log_add(LV_LOG_LEVEL_INFO, __FILE__, __LINE__, dsc);
@@ -71,7 +71,7 @@ void lv_log_add(lv_log_level_t level, const char * file, int line, const char * 
 
 #else /*USE_LV_LOG*/
 
-/*Do nothing if `USE_LV_LOG  0`*/
+	/*Do nothing if `USE_LV_LOG  0`*/
 #define lv_log_add(level, file, line, dsc) {;}
 #define LV_LOG_TRACE(dsc) {;}
 #define LV_LOG_INFO(dsc) {;}

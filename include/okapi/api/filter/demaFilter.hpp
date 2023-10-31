@@ -9,44 +9,44 @@
 #include <ratio>
 
 namespace okapi {
-class DemaFilter : public Filter {
-  public:
-  /**
-   * Double exponential moving average filter.
-   *
-   * @param ialpha alpha gain
-   * @param ibeta beta gain
-   */
-  DemaFilter(double ialpha, double ibeta);
+	class DemaFilter : public Filter {
+		public:
+			/**
+			 * Double exponential moving average filter.
+			 *
+			 * @param ialpha alpha gain
+			 * @param ibeta beta gain
+			 */
+			DemaFilter(double ialpha, double ibeta);
 
-  /**
-   * Filters a value, like a sensor reading.
-   *
-   * @param reading new measurement
-   * @return filtered result
-   */
-  double filter(double ireading) override;
+			/**
+			 * Filters a value, like a sensor reading.
+			 *
+			 * @param reading new measurement
+			 * @return filtered result
+			 */
+			double filter(double ireading) override;
 
-  /**
-   * Returns the previous output from filter.
-   *
-   * @return the previous output from filter
-   */
-  double getOutput() const override;
+			/**
+			 * Returns the previous output from filter.
+			 *
+			 * @return the previous output from filter
+			 */
+			double getOutput() const override;
 
-  /**
-   * Set filter gains.
-   *
-   * @param ialpha alpha gain
-   * @param ibeta beta gain
-   */
-  virtual void setGains(double ialpha, double ibeta);
+			/**
+			 * Set filter gains.
+			 *
+			 * @param ialpha alpha gain
+			 * @param ibeta beta gain
+			 */
+			virtual void setGains(double ialpha, double ibeta);
 
-  protected:
-  double alpha, beta;
-  double outputS = 0;
-  double lastOutputS = 0;
-  double outputB = 0;
-  double lastOutputB = 0;
-};
+		protected:
+			double alpha, beta;
+			double outputS = 0;
+			double lastOutputS = 0;
+			double outputB = 0;
+			double lastOutputB = 0;
+	};
 } // namespace okapi

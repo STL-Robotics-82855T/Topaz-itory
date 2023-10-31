@@ -8,29 +8,29 @@
 #include "okapi/api/filter/filter.hpp"
 
 namespace okapi {
-class PassthroughFilter : public Filter {
-  public:
-  /**
-   * A simple filter that does no filtering and just passes the input through.
-   */
-  PassthroughFilter();
+	class PassthroughFilter : public Filter {
+		public:
+			/**
+			 * A simple filter that does no filtering and just passes the input through.
+			 */
+			PassthroughFilter();
 
-  /**
-   * Filters a value, like a sensor reading.
-   *
-   * @param ireading new measurement
-   * @return filtered result
-   */
-  double filter(double ireading) override;
+			/**
+			 * Filters a value, like a sensor reading.
+			 *
+			 * @param ireading new measurement
+			 * @return filtered result
+			 */
+			double filter(double ireading) override;
 
-  /**
-   * Returns the previous output from filter.
-   *
-   * @return the previous output from filter
-   */
-  double getOutput() const override;
+			/**
+			 * Returns the previous output from filter.
+			 *
+			 * @return the previous output from filter
+			 */
+			double getOutput() const override;
 
-  protected:
-  double lastOutput = 0;
-};
+		protected:
+			double lastOutput = 0;
+	};
 } // namespace okapi

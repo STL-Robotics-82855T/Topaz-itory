@@ -9,15 +9,15 @@
 #include "okapi/api/coreProsAPI.hpp"
 
 namespace okapi {
-class RotarySensor : public ControllerInput<double> {
-  public:
-  virtual ~RotarySensor();
+	class RotarySensor : public ControllerInput<double> {
+		public:
+			virtual ~RotarySensor();
 
-  /**
-   * Get the current sensor value.
-   *
-   * @return the current sensor value, or `PROS_ERR` on a failure.
-   */
-  virtual double get() const = 0;
-};
+			/**
+			 * Get the current sensor value.
+			 *
+			 * @return the current sensor value, or `PROS_ERR` on a failure.
+			 */
+			virtual double get() const = 0;
+	};
 } // namespace okapi

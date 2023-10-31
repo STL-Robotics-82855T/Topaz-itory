@@ -2,12 +2,12 @@
  * GENERATED FILE, DO NOT EDIT IT!
  * @file lv_conf_checker.h
  * Make sure all the defines of lv_conf.h have a default value
-**/
+ **/
 
 #ifndef LV_CONF_CHECKER_H
 #define  LV_CONF_CHECKER_H
 /*===================
-   Dynamic memory
+  Dynamic memory
  *===================*/
 
 /* Memory size which will be used by the library
@@ -58,7 +58,7 @@
 #endif /* LV_ENABLE_GC */
 
 /*===================
-   Graphical settings
+  Graphical settings
  *===================*/
 
 /* Horizontal and vertical resolution of the library.*/
@@ -103,15 +103,15 @@
 #define LV_VDB_SIZE         ((LV_VER_RES * LV_HOR_RES) / 10)
 #endif
 
- /* Bit-per-pixel of VDB. Useful for monochrome or non-standard color format displays.
-  * Special formats are handled with `disp_drv.vdb_wr`)*/
+/* Bit-per-pixel of VDB. Useful for monochrome or non-standard color format displays.
+ * Special formats are handled with `disp_drv.vdb_wr`)*/
 #ifndef LV_VDB_PX_BPP
 #define LV_VDB_PX_BPP       LV_COLOR_SIZE       /*LV_COLOR_SIZE comes from LV_COLOR_DEPTH below to set 8, 16 or 32 bit pixel size automatically */
 #endif
 
- /* Place VDB to a specific address (e.g. in external RAM)
-  * 0: allocate automatically into RAM
-  * LV_VDB_ADR_INV: to replace it later with `lv_vdb_set_adr()`*/
+/* Place VDB to a specific address (e.g. in external RAM)
+ * 0: allocate automatically into RAM
+ * LV_VDB_ADR_INV: to replace it later with `lv_vdb_set_adr()`*/
 #ifndef LV_VDB_ADR
 #define LV_VDB_ADR          0
 #endif
@@ -141,7 +141,7 @@
 #endif
 
 /*=================
-   Misc. setting
+  Misc. setting
  *=================*/
 
 /*Input device settings*/

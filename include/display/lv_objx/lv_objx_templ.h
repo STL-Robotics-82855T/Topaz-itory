@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/*********************
- *      INCLUDES
- *********************/
+	/*********************
+	 *      INCLUDES
+	 *********************/
 #ifdef LV_CONF_INCLUDE_SIMPLE
 #include "lv_conf.h"
 #else
@@ -31,76 +31,76 @@ extern "C" {
 
 #include "display/lv_core/lv_obj.h"
 
-/*********************
- *      DEFINES
- *********************/
+	/*********************
+	 *      DEFINES
+	 *********************/
 
-/**********************
- *      TYPEDEFS
- **********************/
-/*Data of template*/
-typedef struct {
-    lv_ANCESTOR_ext_t ANCESTOR; /*Ext. of ancestor*/
-    /*New data for this type */
-} lv_templ_ext_t;
-
-
-/*Styles*/
-enum {
-    LV_TEMPL_STYLE_X,
-    LV_TEMPL_STYLE_Y,
-};
-typedef uint8_t lv_templ_style_t;
+	/**********************
+	 *      TYPEDEFS
+	 **********************/
+	/*Data of template*/
+	typedef struct {
+		lv_ANCESTOR_ext_t ANCESTOR; /*Ext. of ancestor*/
+		/*New data for this type */
+	} lv_templ_ext_t;
 
 
-/**********************
- * GLOBAL PROTOTYPES
- **********************/
-
-/**
- * Create a template objects
- * @param par pointer to an object, it will be the parent of the new template
- * @param copy pointer to a template object, if not NULL then the new object will be copied from it
- * @return pointer to the created template
- */
-lv_obj_t * lv_templ_create(lv_obj_t * par, const lv_obj_t * copy);
-
-/*======================
- * Add/remove functions
- *=====================*/
+	/*Styles*/
+	enum {
+		LV_TEMPL_STYLE_X,
+		LV_TEMPL_STYLE_Y,
+	};
+	typedef uint8_t lv_templ_style_t;
 
 
-/*=====================
- * Setter functions
- *====================*/
+	/**********************
+	 * GLOBAL PROTOTYPES
+	 **********************/
 
-/**
- * Set a style of a template.
- * @param templ pointer to template object
- * @param type which style should be set
- * @param style pointer to a style
- */
-void lv_templ_set_style(lv_obj_t * templ, lv_templ_style_t type, lv_style_t *style);
+	/**
+	 * Create a template objects
+	 * @param par pointer to an object, it will be the parent of the new template
+	 * @param copy pointer to a template object, if not NULL then the new object will be copied from it
+	 * @return pointer to the created template
+	 */
+	lv_obj_t * lv_templ_create(lv_obj_t * par, const lv_obj_t * copy);
 
-/*=====================
- * Getter functions
- *====================*/
+	/*======================
+	 * Add/remove functions
+	 *=====================*/
 
-/**
- * Get style of a template.
- * @param templ pointer to template object
- * @param type which style should be get
- * @return style pointer to the style
- */
-lv_style_t * lv_templ_get_style(const lv_obj_t * templ, lv_templ_style_t type);
 
-/*=====================
- * Other functions
- *====================*/
+	/*=====================
+	 * Setter functions
+	 *====================*/
 
-/**********************
- *      MACROS
- **********************/
+	/**
+	 * Set a style of a template.
+	 * @param templ pointer to template object
+	 * @param type which style should be set
+	 * @param style pointer to a style
+	 */
+	void lv_templ_set_style(lv_obj_t * templ, lv_templ_style_t type, lv_style_t *style);
+
+	/*=====================
+	 * Getter functions
+	 *====================*/
+
+	/**
+	 * Get style of a template.
+	 * @param templ pointer to template object
+	 * @param type which style should be get
+	 * @return style pointer to the style
+	 */
+	lv_style_t * lv_templ_get_style(const lv_obj_t * templ, lv_templ_style_t type);
+
+	/*=====================
+	 * Other functions
+	 *====================*/
+
+	/**********************
+	 *      MACROS
+	 **********************/
 
 #endif  /*USE_LV_TEMPL*/
 

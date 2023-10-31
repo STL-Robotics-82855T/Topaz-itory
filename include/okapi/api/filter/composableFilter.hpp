@@ -12,39 +12,39 @@
 #include <vector>
 
 namespace okapi {
-class ComposableFilter : public Filter {
-  public:
-  /**
-   * A composable filter is a filter that consists of other filters. The input signal is passed
-   * through each filter in sequence. The final output of this filter is the output of the last
-   * filter.
-   *
-   * @param ilist The filters to use in sequence.
-   */
-  ComposableFilter(const std::initializer_list<std::shared_ptr<Filter>> &ilist);
+	class ComposableFilter : public Filter {
+		public:
+			/**
+			 * A composable filter is a filter that consists of other filters. The input signal is passed
+			 * through each filter in sequence. The final output of this filter is the output of the last
+			 * filter.
+			 *
+			 * @param ilist The filters to use in sequence.
+			 */
+			ComposableFilter(const std::initializer_list<std::shared_ptr<Filter>> &ilist);
 
-  /**
-   * Filters a value.
-   *
-   * @param ireading A new measurement.
-   * @return The filtered result.
-   */
-  double filter(double ireading) override;
+			/**
+			 * Filters a value.
+			 *
+			 * @param ireading A new measurement.
+			 * @return The filtered result.
+			 */
+			double filter(double ireading) override;
 
-  /**
-   * @return The previous output from filter.
-   */
-  double getOutput() const override;
+			/**
+			 * @return The previous output from filter.
+			 */
+			double getOutput() const override;
 
-  /**
-   * Adds a filter to the end of the sequence.
-   *
-   * @param ifilter The filter to add.
-   */
-  virtual void addFilter(std::shared_ptr<Filter> ifilter);
+			/**
+			 * Adds a filter to the end of the sequence.
+			 *
+			 * @param ifilter The filter to add.
+			 */
+			virtual void addFilter(std::shared_ptr<Filter> ifilter);
 
-  protected:
-  std::vector<std::shared_ptr<Filter>> filters;
-  double output = 0;
-};
+		protected:
+			std::vector<std::shared_ptr<Filter>> filters;
+			double output = 0;
+	};
 } // namespace okapi

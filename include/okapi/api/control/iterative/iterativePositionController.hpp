@@ -8,6 +8,6 @@
 #include "okapi/api/control/iterative/iterativeController.hpp"
 
 namespace okapi {
-template <typename Input, typename Output>
-class IterativePositionController : public IterativeController<Input, Output> {};
+	template <typename Input, typename Output>
+		class IterativePositionController : public IterativeController<Input, Output> {};
 } // namespace okapi

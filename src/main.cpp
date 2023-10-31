@@ -16,41 +16,41 @@ odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
 /*
-	--- Calculating Speed ---
-	pi * 3.25 in = 10.210176124 in // Distance travelled per full rotation
-	600 rpm geared with (36:60) = 360 rpm
-	360 rpm = 6 rps
-	6 rps * 10.210176124 in = 61.261056744 in/s
-	61.261056744 in/s / 12 in/ft = 5.105088062 ft/s
-	5.105088062 ft/s * 0.3048 m/ft = 1.556932505 m/s
-	
-	--- Calculating Torque ---
-	V5 motor 600rpm stall torque: 0.33 N*m
-	Gear ratio advantage: 60/36 = 1.666666667
-	0.33 N*m * 1.666666667 = 0.55 N*m stall torque
+   --- Calculating Speed ---
+   pi * 3.25 in = 10.210176124 in // Distance travelled per full rotation
+   600 rpm geared with (36:60) = 360 rpm
+   360 rpm = 6 rps
+   6 rps * 10.210176124 in = 61.261056744 in/s
+   61.261056744 in/s / 12 in/ft = 5.105088062 ft/s
+   5.105088062 ft/s * 0.3048 m/ft = 1.556932505 m/s
 
-	Using only 0.5 N*m for safety
+   --- Calculating Torque ---
+   V5 motor 600rpm stall torque: 0.33 N*m
+   Gear ratio advantage: 60/36 = 1.666666667
+   0.33 N*m * 1.666666667 = 0.55 N*m stall torque
 
-	--- Calculating Force ---
-	Force = torque / wheel radius
-	0.5 N*m / 0.0413 m(1.625 in) = 12.1 N
+   Using only 0.5 N*m for safety
 
-	6 motors * 12.1 N = 72.6 N
+   --- Calculating Force ---
+   Force = torque / wheel radius
+   0.5 N*m / 0.0413 m(1.625 in) = 12.1 N
 
-	Sum of forces = mass * acceleration
+   6 motors * 12.1 N = 72.6 N
 
-	72.6 N = 4.24 kg * acceleration
+   Sum of forces = mass * acceleration
 
-	--- Calculating Acceleration ---
-	72.6 N / 4.24 kg = 17.12 m/s^2
+   72.6 N = 4.24 kg * acceleration
 
-	17.12 m/s^2 * 3.28084 ft/m = 56.2 ft/s^2
+   --- Calculating Acceleration ---
+   72.6 N / 4.24 kg = 17.12 m/s^2
 
-	--- Calculating Jerk ---
-	Assuming 0.5 seconds to reach max acceleration
-	17.12 m/s^2 / 0.5 s = 34.24 m/s^3
+   17.12 m/s^2 * 3.28084 ft/m = 56.2 ft/s^2
 
-*/
+   --- Calculating Jerk ---
+   Assuming 0.5 seconds to reach max acceleration
+   17.12 m/s^2 / 0.5 s = 34.24 m/s^3
+
+ */
 
 const double MAX_VELOCITY = 1.556932505; // m/s
 const double MAX_ACCELERATION = 17.12; // m/s^2
@@ -109,7 +109,7 @@ void competition_initialize() {}
 void autonomous() {
 
 	// time_t start_time = std::time(nullptr); // Get the current time in seconds
-	
+
 	int path_size = path.size();
 
 	for (int index = 0; index < path_size; index++) {
@@ -153,7 +153,7 @@ void opcontrol() {
 
 		delay(5);
 	}
-	 
+
 
 }
 
