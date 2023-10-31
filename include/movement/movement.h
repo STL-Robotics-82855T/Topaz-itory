@@ -1,3 +1,5 @@
+#ifndef MOVEMENT_H
+#define MOVEMENT_H
 #include "main.h"
 #include "./movement/odometry.h" // Defines odometry class
 #ifndef DEVICES_H
@@ -177,4 +179,4 @@ void drive_line_auton(float inches, float speed, float timeout = -1)
 
 	return;
 }
-
+#endif

@@ -1,3 +1,5 @@
+#ifndef ODOMETRY_H
+#define ODOMETRY_H
 #include "main.h"
 #ifndef DEVICES_H
 #include "devices.h" // Defines motors, controller and sensors
@@ -159,3 +161,4 @@ class odometry
 			return diff;
 		}
 };
+#endif

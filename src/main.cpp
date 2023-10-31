@@ -12,7 +12,7 @@
 // Wheel diameter: 3.25"
 
 // Constants
-odometry odom(6.02, 6.02, 0.73, 3.25);
+//odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
 /*
