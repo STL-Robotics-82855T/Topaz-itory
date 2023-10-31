@@ -21,12 +21,8 @@ MotorGroup right({right_front_bottom, right_front_top, right_back});
 // Cata motor
 Motor cata_motor(11, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 
-// Intake motor
-Motor intake_motor(8, E_MOTOR_GEAR_GREEN, false, E_MOTOR_ENCODER_ROTATIONS);
-
-
-Imu imu_sensor1(13);
-Imu imu_sensor2(12);
+Imu imu_sensor1(12);
+Imu imu_sensor2(13);
 
 // Rotation horizontal_tracker(2);
 // Rotation right_tracker(3);
