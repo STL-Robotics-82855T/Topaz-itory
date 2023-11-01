@@ -6,7 +6,7 @@
 #include "devices.h" // Defines motors, controller and sensors
 #endif
 
-odometry odom(6.02, 6.02, 0.73, 3.25);
+odometry odom(master, imu_sensor1, imu_sensor2, left_front_bottom, right_front_bottom, 6.02, 6.02, 0.73, 3.25);
 
 /// @brief Turns n degrees clockwise (accepts negative) (Blocking)
 /// @param degrees 0.0 - 360.0 degrees (0 is forward) (All degrees relative to the starting position of the robot)
