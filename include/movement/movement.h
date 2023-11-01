@@ -2,9 +2,7 @@
 #define MOVEMENT_H
 #include "main.h"
 #include "./movement/odometry.h" // Defines odometry class
-#ifndef DEVICES_H
 #include "devices.h" // Defines motors, controller and sensors
-#endif
 
 odometry odom(master, imu_sensor1, imu_sensor2, left_front_bottom, right_front_bottom, 6.02, 6.02, 0.73, 3.25);
 
