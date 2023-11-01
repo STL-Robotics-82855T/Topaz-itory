@@ -13,7 +13,7 @@
 
 // Constants
 //odometry odom(6.02, 6.02, 0.73, 3.25);
-catapult cata;
+catapult cata(master, cata_motor, cata_tracker);
 
 /*
    --- Calculating Speed ---
