@@ -82,7 +82,7 @@ void reset_sensors() {
 	imu_sensor2.tare();
 
 	master.print(0, 0, "Calibrating IMUs...");
-	imu_sensor1.reset(false);
+	imu_sensor1.reset(true);
 	delay(50);
 	imu_sensor2.reset(true);
 	delay(50);
@@ -148,8 +148,23 @@ void opcontrol() {
 		int left_power = power + turn;
 		int right_power = power - turn;
 
+
 		left.move(left_power);
 		right.move(right_power);
+		
+		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+			intake_motor.move(127);
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+			intake_motor.move(-127);
+		} else {
+			intake_motor.move(0);
+		} 
+
+		if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+			state = !state;
+			intake_cylinders.set_value(state);
+
+		}
 
 		delay(5);
 	}
