@@ -5,9 +5,9 @@
 Controller master(E_CONTROLLER_MASTER);
 
 // Left side motors
-Motor left_front_bottom(5, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
-Motor left_front_top(20, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS); // Top is stacked on top of bottom
-Motor left_back(4, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
+Motor left_front_bottom(14, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
+Motor left_front_top(15, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS); // Top is stacked on top of bottom
+Motor left_back(16, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
 
 MotorGroup left({left_front_bottom, left_front_top, left_back});
 
