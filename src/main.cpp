@@ -66,6 +66,8 @@ squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_
 
 std::vector<squiggles::ProfilePoint> path = spline_generator.generate({squiggles::Pose(0.0, 0.0, 1.0),squiggles::Pose(4.0, 4.0, 1.0)});
 
+extern const lv_img_dsc_t funniimage;
+
 void reset_sensors() {
 	// set posititon of sensors to 0
 	lcd::initialize();
@@ -99,6 +101,10 @@ void initialize() {
 	Task odom_position_task([] { odom.get_current_position(); });
 	// Task catapult_rewind([] { cata.rewind_cata(); });
 	Task catapult_monitor([] { cata.start(); });
+	
+	lv_obj_t * img1 = lv_img_create(lv_scr_act(), NULL);
+	lv_img_set_src(img1, &funniimage);
+	lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 
 
