@@ -66,7 +66,7 @@ squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_
 
 std::vector<squiggles::ProfilePoint> path = spline_generator.generate({squiggles::Pose(0.0, 0.0, 1.0),squiggles::Pose(4.0, 4.0, 1.0)});
 
-extern const lv_img_dsc_t funniimage;
+extern const lv_img_dsc_t lacktoes;
 
 void reset_sensors() {
 	// set posititon of sensors to 0
@@ -103,7 +103,7 @@ void initialize() {
 	Task catapult_monitor([] { cata.start(); });
 	
 	lv_obj_t * img1 = lv_img_create(lv_scr_act(), NULL);
-	lv_img_set_src(img1, &funniimage);
+	lv_img_set_src(img1, &lacktoes);
 	lv_obj_align(img1, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 
