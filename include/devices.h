@@ -28,12 +28,13 @@ MotorGroup right({right_front_bottom, right_front_top, right_back});
 bool state = false;
 ADIDigitalOut intake_cylinders('a', state);
 
-// IMUs
+// IMUs			P#
 Imu imu_sensor1(17);
 Imu imu_sensor2(18);
 
-// Rotation horizontal_tracker(2);
-// Rotation right_tracker(3);
-// Rotation cata_tracker(4, true);
+// ROTATION SENSORS				P#	Invert
+Rotation horizontal_tracker(	2);
+Rotation right_tracker(			3);
+Rotation cata_tracker(			4,	true);
 
 #endif
