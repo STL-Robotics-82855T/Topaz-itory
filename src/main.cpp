@@ -84,7 +84,7 @@ void reset_sensors() {
 	imu_sensor2.tare();
 
 	master.print(0, 0, "Calibrating IMUs...");
-	imu_sensor1.reset(false);
+	imu_sensor1.reset(true);
 	delay(50);
 	imu_sensor2.reset(true);
 	delay(50);
@@ -116,27 +116,27 @@ void autonomous() {
 
 	// time_t start_time = std::time(nullptr); // Get the current time in seconds
 
-	int path_size = path.size();
+	// int path_size = path.size();
 
-	for (int index = 0; index < path_size; index++) {
-		squiggles::ProfilePoint point = path[index];
-		vector<double> wheel_velocities = point.wheel_velocities;
-		double left_velocity = wheel_velocities[0];
-		double right_velocity = wheel_velocities[1];
-		double last_time = point.time;
-		double next_time = path[std::min(index + 1, path_size)].time;
-		double wait_time = next_time - last_time;
+	// for (int index = 0; index < path_size; index++) {
+	// 	squiggles::ProfilePoint point = path[index];
+	// 	vector<double> wheel_velocities = point.wheel_velocities;
+	// 	double left_velocity = wheel_velocities[0];
+	// 	double right_velocity = wheel_velocities[1];
+	// 	double last_time = point.time;
+	// 	double next_time = path[std::min(index + 1, path_size)].time;
+	// 	double wait_time = next_time - last_time;
 
-		// Hopefully this works :O
-		double left_power = left_velocity / MAX_VELOCITY * 127;
-		double right_power = right_velocity / MAX_VELOCITY * 127;
+	// 	// Hopefully this works :O
+	// 	double left_power = left_velocity / MAX_VELOCITY * 127;
+	// 	double right_power = right_velocity / MAX_VELOCITY * 127;
 
-		left.move(left_power);
-		right.move(right_power);
+	// 	left.move(left_power);
+	// 	right.move(right_power);
 
-		delay(wait_time * 1000);
+	// 	delay(wait_time * 1000);
 
-	}
+	// }
 
 }
 
@@ -154,8 +154,23 @@ void opcontrol() {
 		int left_power = power + turn;
 		int right_power = power - turn;
 
+
 		left.move(left_power);
 		right.move(right_power);
+		
+		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+			intake_motor.move(127);
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+			intake_motor.move(-127);
+		} else {
+			intake_motor.move(0);
+		} 
+
+		if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+			state = !state;
+			intake_cylinders.set_value(state);
+
+		}
 
 		delay(5);
 	}
