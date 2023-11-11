@@ -50,7 +50,7 @@ catapult cata;
    Assuming 0.5 seconds to reach max acceleration
    17.12 m/s^2 / 0.5 s = 34.24 m/s^3
 
- */
+*/
 
 const double MAX_VELOCITY = 1.556932505; // m/s
 const double MAX_ACCELERATION = 17.12; // m/s^2
@@ -58,13 +58,12 @@ const double MAX_JERK = 34.24; // m/s^3
 const double WHEELBASE = 11.9; // in
 
 const double inch_to_meter = 0.0254; // convert all inches to meters for squiggles
-const double feet_to_meter = 0.3048; // convert all feet to meters for squiggles
 
-squiggles::Constraints motion_constraints = squiggles::Constraints(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK);
+// squiggles::Constraints motion_constraints = squiggles::Constraints(MAX_VELOCITY, MAX_ACCELERATION, MAX_JERK);
 
-squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_constraints, std::make_shared<squiggles::TankModel>(WHEELBASE*inch_to_meter, motion_constraints));
+// squiggles::SplineGenerator spline_generator = squiggles::SplineGenerator(motion_constraints, std::make_shared<squiggles::TankModel>(WHEELBASE * inch_to_meter, motion_constraints));
 
-std::vector<squiggles::ProfilePoint> path = spline_generator.generate({squiggles::Pose(0.0, 0.0, 1.0),squiggles::Pose(4.0, 4.0, 1.0)});
+// std::vector<squiggles::ProfilePoint> path = spline_generator.generate({ squiggles::Pose(0.0, 0.0, 0.0),squiggles::Pose(1.0, 1.0, 1.0) });
 
 void reset_sensors() {
 	// set posititon of sensors to 0
@@ -78,25 +77,20 @@ void reset_sensors() {
 	// cata_tracker.reset_position();
 
 
-	imu_sensor1.tare();
-	imu_sensor2.tare();
 
 	master.print(0, 0, "Calibrating IMUs...");
 	imu_sensor1.reset(true);
 	delay(50);
-	imu_sensor2.reset(true);
-	delay(50);
 	master.clear();
+	imu_sensor1.tare();
 }
 
 void initialize() {
 
-
-
 	reset_sensors();
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
-	Task odom_position_task([] { odom.get_current_position(); });
+	// Task odom_position_task([] { odom.get_current_position(); });
 	// Task catapult_rewind([] { cata.rewind_cata(); });
 	Task catapult_monitor([] { cata.start(); });
 }
@@ -148,21 +142,24 @@ void opcontrol() {
 		int left_power = power + turn;
 		int right_power = power - turn;
 
+		// https://www.desmos.com/calculator/wwn0itzfjy (Graph of the power curve)
+		left_power = left_power * sqrt(abs(left_power));
+		right_power = right_power * sqrt(abs(right_power));
 
 		left.move(left_power);
 		right.move(right_power);
-		
+
 		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			intake_motor.move(127);
 		} else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
 			intake_motor.move(-127);
 		} else {
 			intake_motor.move(0);
-		} 
+		}
 
 		if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-			state = !state;
-			intake_cylinders.set_value(state);
+			intake_state = !intake_state;
+			intake_cylinders.set_value(intake_state);
 
 		}
 
