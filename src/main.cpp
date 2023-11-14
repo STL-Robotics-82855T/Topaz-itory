@@ -91,8 +91,8 @@ void initialize() {
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
-	// Task catapult_rewind([] { cata.rewind_cata(); });
 	Task catapult_monitor([] { cata.start(); });
+	Task catapult_rewind([] { cata.rewind_cata(); });
 }
 
 
@@ -101,6 +101,10 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+
+	turn_to_angle_auton(-90);
+	delay(1000);
+	drive_line_auton(100);
 
 	// time_t start_time = std::time(nullptr); // Get the current time in seconds
 
@@ -132,6 +136,8 @@ void autonomous() {
 
 void opcontrol() {
 
+	// autonomous();
+
 	int index = 0;
 
 	while (true) {
@@ -139,12 +145,14 @@ void opcontrol() {
 		int power = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		int turn = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
+		// power = power * sqrt(abs(power));
+
 		int left_power = power + turn;
 		int right_power = power - turn;
 
 		// https://www.desmos.com/calculator/wwn0itzfjy (Graph of the power curve)
-		left_power = left_power * sqrt(abs(left_power));
-		right_power = right_power * sqrt(abs(right_power));
+		// left_power = left_power * sqrt(abs(left_power));
+		// right_power = right_power * sqrt(abs(right_power));
 
 		left.move(left_power);
 		right.move(right_power);

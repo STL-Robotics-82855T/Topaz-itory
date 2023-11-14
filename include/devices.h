@@ -32,6 +32,6 @@ Imu imu_sensor1(17);
 
 // Rotation horizontal_tracker(2);
 // Rotation right_tracker(3);
-// Rotation cata_tracker(4, true);
+Rotation cata_tracker(1, true);
 
 #endif
