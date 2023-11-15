@@ -40,7 +40,7 @@ void turn_to_angle_auton(float target_heading) {
 			turn_right = (odom.current_heading_deg - target_heading > 180); // If the target is more than 180 degrees away going counter-clockwise is faster
 		}
 
-		if (turn_right) {
+		if (!turn_right) {
 			current_error *= -1;
 		}
 
@@ -53,7 +53,7 @@ void turn_to_angle_auton(float target_heading) {
 		left.move(-power);
 		right.move(power);
 
-		delay(5);
+		delay(10);
 
 	}
 
@@ -68,7 +68,7 @@ void turn_to_angle_auton(float target_heading) {
 void drive_line_auton(float target_inches) {
 
 
-	float wheel_distance_per_rotation = 3.25 * PI * (36.0 / 60.0); // inches per rotation
+	float wheel_distance_per_encoder_rotation = 3.25 * PI * (36.0 / 60.0); // inches per rotation
 
 	// PID constants
 	float P = 2.5;
@@ -80,42 +80,45 @@ void drive_line_auton(float target_inches) {
 	float start_left_position = left[1].get_position();
 	float start_right_position = right[0].get_position();
 
-	float current_error_left = target_inches - ((left[1].get_position() - start_left_position) * wheel_distance_per_rotation);
+	float current_error_left = target_inches;
 	float previous_error_left = 0;
 	float build_up_error_left = 0;
-	float current_error_right = target_inches - ((right[0].get_position() - start_right_position) * wheel_distance_per_rotation);
+	float current_error_right = target_inches;
 	float previous_error_right = 0;
 	float build_up_error_right = 0;
 
 	float power_right;
 	float power_left;
 
-	cout << "Driving straight" << endl;
+	cout << "Driving straight for: " << target_inches << endl;
 
-	while (abs(current_error_left) > allowed_error || abs(start_right_position) > allowed_error || abs(left[1].get_actual_velocity()) > 20 || abs(right[0].get_actual_velocity()) > 20) {
-		current_error_right = target_inches - ((right[0].get_position() - start_right_position) * wheel_distance_per_rotation);
-		if (abs(current_error_right) < 5) { // If the error is less than 5 inches, start building up the error (avoids windup)
+	while (abs(current_error_left) > allowed_error || abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 20 || abs(right[0].get_actual_velocity()) > 20) {
+		current_error_right = target_inches - ((right[0].get_position() - start_right_position) * wheel_distance_per_encoder_rotation);
+		if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_right += current_error_right;
 		}
 		power_right = (current_error_right * P) + (build_up_error_right * I) + ((current_error_right - previous_error_right) * D);
 		previous_error_right = current_error_right;
 
-		current_error_left = target_inches - ((left[1].get_position() - start_left_position) * wheel_distance_per_rotation);
-		if (abs(current_error_left) < 5) { // If the error is less than 5 inches, start building up the error (avoids windup)
+		current_error_left = target_inches - ((left[1].get_position() - start_left_position) * wheel_distance_per_encoder_rotation);
+		if (abs(current_error_left) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_left += current_error_left;
 		}
+		
 		power_left = (current_error_left * P) + (build_up_error_left * I) + ((current_error_left - previous_error_left) * D);
 		previous_error_left = current_error_left;
-		
+
+		power_right *= 20; // Tune this scaling factor
 		power_left *= 20;
-		power_right *= 20;
+
+
+		// power_left = map(power_left, 0, 2, 0, 127);
+		// power_right = map(power_right, 0, 2, 0, 127);
 
 		// cout << "Error: " << current_error_left << " " << current_error_right << endl;
 		// cout << power_left << " " << power_right << endl;
 
 
-		// power_left = map(power_left, 0, 2, 0, 127);
-		// power_right = map(power_right, 0, 2, 0, 127);
 
 		// power_left = 127 * abs(power_left) / power_left;
 		// power_right = 127 * abs(power_right) / power_right;
@@ -123,7 +126,7 @@ void drive_line_auton(float target_inches) {
 		right.move(power_right);
 		left.move(power_left);
 
-		delay(5);
+		delay(10);
 
 	}
 

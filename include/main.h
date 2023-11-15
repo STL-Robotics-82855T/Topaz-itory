@@ -81,6 +81,7 @@ extern "C" {
 #include <cmath>
 #include <numeric>
 #include <ctime>
+#include <map>
 
 using std::pair;
 using std::vector;

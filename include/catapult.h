@@ -13,30 +13,23 @@ public:
 
 
 	void start() {
-		while (true) {
-			cata_button_held = master.get_digital(E_CONTROLLER_DIGITAL_R1);
-			// Press right bumper to shoot
-			if (cata_button_held) {
-				cata_motor.move(127);
-			}
-			delay(5);
-		}
-	}
-
-	void rewind_cata() {
-		cata_tracker.reset();
 		int cata_angle;
 		while (true) {
-			cata_angle = cata_tracker.get_position();
+			// Press right bumper to shoot
+			cata_button_held = master.get_digital(E_CONTROLLER_DIGITAL_R1);
 			// FIGURE OUT START ANGLE OF CATAPULT (exact value)
-			if (!cata_button_held) {
-				if (cata_angle < 7500) {
-					cata_motor.move(0);
+			cata_angle = cata_tracker.get_position();
+			if (cata_button_held) {
+				cata_motor.move(127);
+			} else {
+				if (cata_angle < 5000) { // Centidegrees
+					cata_motor.move(127);
 				} else {
 					cata_motor.move(0);
 				}
 			}
-			delay(5);
+			
+			delay(10);
 		}
 	}
 };
