@@ -173,6 +173,11 @@ void opcontrol() {
 
 		}
 
+		if (master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+			wing_state = !wing_state;
+			wing_cylinders.set_value(wing_state);
+		}
+
 		delay(5);
 	}
 
