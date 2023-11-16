@@ -13,6 +13,7 @@ public:
 
 
 	void start() {
+		cata_motor.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 		int cata_angle;
 		while (true) {
 			// Press right bumper to shoot
@@ -28,7 +29,7 @@ public:
 					cata_motor.move(0);
 				}
 			}
-			
+			cout << "Cata angle: " << cata_angle << endl;
 			delay(10);
 		}
 	}

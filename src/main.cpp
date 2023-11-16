@@ -77,8 +77,8 @@ void reset_sensors() {
 
 	// horizontal_tracker.reset_position();
 	// right_tracker.reset_position();
+	cata_tracker.reset();
 	cata_tracker.reset_position();
-
 
 
 	master.print(0, 0, "Calibrating IMU...");

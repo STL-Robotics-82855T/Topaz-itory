@@ -22,7 +22,7 @@ MotorGroup right({ right_front_bottom, right_front_top, right_back });
 Motor cata_motor(10, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 
 // Intake motor
-Motor intake_motor(20, E_MOTOR_GEAR_GREEN, false, E_MOTOR_ENCODER_ROTATIONS);
+Motor intake_motor(20, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 
 bool intake_state = false;
 ADIDigitalOut intake_cylinders('a', intake_state);
@@ -33,5 +33,6 @@ Imu imu_sensor1(17);
 // Rotation horizontal_tracker(2);
 // Rotation right_tracker(3);
 Rotation cata_tracker(1, true);
+
 
 #endif
