@@ -91,6 +91,8 @@ using std::endl;
 
 #define PI 3.14159265358979323846
 
+auto now = millis();
+
 #endif
 
 #endif  // _PROS_MAIN_H_

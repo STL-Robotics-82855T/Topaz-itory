@@ -1,6 +1,4 @@
-#include "main.h"
-#ifndef DEVICES_H
-#define DEVICES_H
+#pragma once
 
 Controller master(E_CONTROLLER_MASTER);
 
@@ -33,6 +31,3 @@ Imu imu_sensor1(17);
 // Rotation horizontal_tracker(2);
 // Rotation right_tracker(3);
 Rotation cata_tracker(1, true);
-
-
-#endif

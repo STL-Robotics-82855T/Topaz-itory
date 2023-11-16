@@ -1,19 +1,12 @@
-#include "main.h"
-#ifndef DEVICES_H
-#include "devices.h"
-#endif
+#pragma once
 
 class catapult {
 private:
 	bool is_cata_down = false;
 	bool cata_button_held = false;
 
-
 public:
-
-
 	void start() {
-		cata_motor.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 		int cata_angle;
 		while (true) {
 			// Press right bumper to shoot
@@ -30,7 +23,8 @@ public:
 				}
 			}
 			cout << "Cata angle: " << cata_angle << endl;
-			delay(10);
+			// delay(10);
+			Task::delay_until(&now, 10);
 		}
 	}
 };

@@ -1,8 +1,4 @@
-#ifndef ODOMETRY_H
-#define ODOMETRY_H
-#include "main.h"
-#include "devices.h" // Defines motors, controller and sensors
-
+#pragma once
 
 class odometry {
 public:
@@ -38,7 +34,8 @@ public:
 			// Task::delay(50);
 			// master.print(1, 0, "IMU 2: %.2f", imu_sensor2.get_rotation());
 			// Task::delay(50);
-			delay(5);
+			Task::delay_until(&now, 5);
+
 		}
 	}
 
@@ -124,7 +121,8 @@ public:
 			prev_right_pos = right_pos;
 			prev_horizontal_pos = horizontal_pos;
 
-			delay(10);
+			// delay(10);
+			Task::delay_until(&now, 10);
 		}
 	}
 
@@ -153,4 +151,3 @@ private:
 		return diff;
 	}
 };
-#endif

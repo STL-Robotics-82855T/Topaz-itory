@@ -1,8 +1,4 @@
-#ifndef MOVEMENT_H
-#define MOVEMENT_H
-#include "main.h"
-#include "./movement/odometry.h" // Defines odometry class
-#include "devices.h"			 // Defines motors, controller and sensors
+#pragma once
 
 odometry odom(6.02, 6.02, 0.73, 3.25);
 
@@ -53,7 +49,7 @@ void turn_to_angle_auton(float target_heading) {
 		left.move(-power);
 		right.move(power);
 
-		delay(10);
+		Task::delay_until(&now, 10);
 
 	}
 
@@ -125,8 +121,8 @@ void drive_line_auton(float target_inches) {
 
 		right.move(power_right);
 		left.move(power_left);
-
-		delay(10);
+	
+		Task::delay_until(&now, 10);
 
 	}
 
@@ -136,7 +132,6 @@ void drive_line_auton(float target_inches) {
 	right.move(0);
 
 }
-#endif
 
 
 

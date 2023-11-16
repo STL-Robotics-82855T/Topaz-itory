@@ -1,7 +1,7 @@
 #include "main.h"
 #include "devices.h" // Defines motors, controller, sensors and helper functions
-#include "./movement/movement.h" // Defines movement class
 #include "./movement/odometry.h" // Defines odometry class
+#include "./movement/movement.h" // Defines movement class
 #include "catapult.h" // The catapult functions
 
 #include "squiggles/squiggles.hpp" // The squiggles library for path planning
