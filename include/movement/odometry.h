@@ -34,7 +34,7 @@ public:
 			// Task::delay(50);
 			// master.print(1, 0, "IMU 2: %.2f", imu_sensor2.get_rotation());
 			// Task::delay(50);
-			Task::delay_until(&now, 5);
+			delay(5);
 
 		}
 	}
@@ -121,8 +121,7 @@ public:
 			prev_right_pos = right_pos;
 			prev_horizontal_pos = horizontal_pos;
 
-			// delay(10);
-			Task::delay_until(&now, 10);
+			delay(10);
 		}
 	}
 

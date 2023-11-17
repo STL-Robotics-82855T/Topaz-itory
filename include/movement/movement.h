@@ -36,7 +36,7 @@ void turn_to_angle_auton(float target_heading) {
 			turn_right = (odom.current_heading_deg - target_heading > 180); // If the target is more than 180 degrees away going counter-clockwise is faster
 		}
 
-		if (!turn_right) {
+		if (turn_right) {
 			current_error *= -1;
 		}
 
@@ -49,7 +49,7 @@ void turn_to_angle_auton(float target_heading) {
 		left.move(-power);
 		right.move(power);
 
-		Task::delay_until(&now, 10);
+		delay(10);
 
 	}
 
@@ -122,7 +122,7 @@ void drive_line_auton(float target_inches) {
 		right.move(power_right);
 		left.move(power_left);
 	
-		Task::delay_until(&now, 10);
+		delay(10);
 
 	}
 

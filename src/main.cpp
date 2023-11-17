@@ -95,6 +95,8 @@ void initialize() {
 	Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
 	Task catapult_monitor([] { cata.start(); });
+
+	cout << "Initialized" << endl;
 }
 
 
@@ -104,9 +106,66 @@ void competition_initialize() {}
 
 void autonomous() {
 
-	turn_to_angle_auton(-90);
+	cout << "Autonomous started" << endl;
+
+
+	// Left side auton
+
+	// drive_line_auton(5);
+	// delay(500);
+	// turn_to_angle_auton(-60);
+	// delay(1000);
+	// drive_line_auton(20);
+	// delay(500);
+	// intake_motor.move(-100);
+	// delay(1000);
+	// intake_motor.move(0);
+	// drive_line_auton(10);
+	// delay(50);
+	// turn_to_angle_auton(0);
+	// delay(50);
+	// drive_line_auton(50);
+	// delay(50);
+	// drive_line_auton(-60);
+
+
+	// Right side auton
+
+	drive_line_auton(5);
+	delay(500);
+	turn_to_angle_auton(60);
 	delay(1000);
-	drive_line_auton(100);
+	drive_line_auton(20);
+	delay(500);
+	intake_motor.move(-100);
+	delay(1000);
+	intake_motor.move(0);
+	drive_line_auton(10);
+	delay(50);
+	turn_to_angle_auton(0);
+	delay(50);
+	drive_line_auton(50);
+	delay(50);
+	drive_line_auton(-60);
+
+
+
+	// delay(50);
+	// turn_to_angle_auton(180);
+	// // wing_state = !wing_state;
+	// // wing_cylinders.set_value(wing_state);
+	// delay(500);
+	// drive_line_auton(-50);
+	// delay(500);
+	// drive_line_auton(10);
+	// delay(250);
+	// drive_line_auton(-40);
+	
+	// wing_state = !wing_state;
+	// wing_cylinders.set_value(wing_state);
+	
+
+	cout << "Autonomous ended" << endl;
 
 	// time_t start_time = std::time(nullptr); // Get the current time in seconds
 
@@ -137,8 +196,6 @@ void autonomous() {
 
 
 void opcontrol() {
-
-	// autonomous();
 
 	int index = 0;
 

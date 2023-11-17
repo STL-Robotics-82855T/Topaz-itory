@@ -19,6 +19,7 @@ MotorGroup right({ right_front_bottom, right_front_top, right_back });
 // Cata motor
 Motor cata_motor(10, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 
+
 // Intake motor
 Motor intake_motor(20, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 
