@@ -198,6 +198,7 @@ void autonomous() {
 void opcontrol() {
 
 	int index = 0;
+	bool reverse_drive = false;
 
 	while (true) {
 
@@ -210,11 +211,13 @@ void opcontrol() {
 		int left_power = power + turn;
 		int right_power = power - turn;
 
+		if (master.get_digital(E_CONTROLLER_DIGITAL_LEFT) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+			reverse_drive = !reverse_drive;
+		}
 
 
-
-		left.move(left_power);
-		right.move(right_power);
+		left.move((reverse_drive ? -1 : 1) * left_power);
+		right.move((reverse_drive ? -1 : 1) * right_power);
 
 		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			intake_motor.move(127);
