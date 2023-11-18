@@ -131,65 +131,32 @@ void autonomous() {
 
 	// Right side auton
 
-	drive_line_auton(5);
-	delay(500);
-	turn_to_angle_auton(60);
-	delay(1000);
-	drive_line_auton(20);
-	delay(500);
-	intake_motor.move(-100);
-	delay(1000);
-	intake_motor.move(0);
-	drive_line_auton(10);
-	delay(50);
-	turn_to_angle_auton(0);
-	delay(50);
-	drive_line_auton(50);
-	delay(50);
-	drive_line_auton(-60);
-
-
-
-	// delay(50);
-	// turn_to_angle_auton(180);
-	// // wing_state = !wing_state;
-	// // wing_cylinders.set_value(wing_state);
+	// drive_line_auton(5);
 	// delay(500);
-	// drive_line_auton(-50);
+	// turn_to_angle_auton(60);
+	// delay(1000);
+	// drive_line_auton(20);
 	// delay(500);
+	// intake_motor.move(-100);
+	// delay(1000);
+	// intake_motor.move(0);
 	// drive_line_auton(10);
-	// delay(250);
-	// drive_line_auton(-40);
-	
-	// wing_state = !wing_state;
-	// wing_cylinders.set_value(wing_state);
-	
+	// delay(50);
+	// turn_to_angle_auton(0);
+	// delay(50);
+	// drive_line_auton(50);
+	// delay(50);
+	// drive_line_auton(-60);
+
+
+	// Auton skills
+	// intake_motor.move(127);
+	// delay(50000);
+	// intake_motor.move(0);
+	// drive_line_auton(75);
+
 
 	cout << "Autonomous ended" << endl;
-
-	// time_t start_time = std::time(nullptr); // Get the current time in seconds
-
-	// int path_size = path.size();
-
-	// for (int index = 0; index < path_size; index++) {
-	// 	squiggles::ProfilePoint point = path[index];
-	// 	vector<double> wheel_velocities = point.wheel_velocities;
-	// 	double left_velocity = wheel_velocities[0];
-	// 	double right_velocity = wheel_velocities[1];
-	// 	double last_time = point.time;
-	// 	double next_time = path[std::min(index + 1, path_size)].time;
-	// 	double wait_time = next_time - last_time;
-
-	// 	// Hopefully this works :O
-	// 	double left_power = left_velocity / MAX_VELOCITY * 127;
-	// 	double right_power = right_velocity / MAX_VELOCITY * 127;
-
-	// 	left.move(left_power);
-	// 	right.move(right_power);
-
-	// 	delay(wait_time * 1000);
-
-	// }
 
 }
 
@@ -207,17 +174,16 @@ void opcontrol() {
 
 		// https://www.desmos.com/calculator/zdyrwup2xa (Graph of the power curve)
 		power = power_curve[power];
-
-		int left_power = power + turn;
-		int right_power = power - turn;
-
+		
 		if (master.get_digital(E_CONTROLLER_DIGITAL_LEFT) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
 			reverse_drive = !reverse_drive;
 		}
 
+		int left_power = (reverse_drive ? -1 : 1) * power + turn;
+		int right_power = (reverse_drive ? -1 : 1) * power - turn;
 
-		left.move((reverse_drive ? -1 : 1) * left_power);
-		right.move((reverse_drive ? -1 : 1) * right_power);
+		left.move(left_power);
+		right.move(right_power);
 
 		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			intake_motor.move(127);
@@ -227,13 +193,13 @@ void opcontrol() {
 			intake_motor.move(0);
 		}
 
-		if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 			intake_state = !intake_state;
 			intake_cylinders.set_value(intake_state);
 
 		}
 
-		if (master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
 			wing_state = !wing_state;
 			wing_cylinders.set_value(wing_state);
 		}

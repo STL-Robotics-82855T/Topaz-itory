@@ -17,7 +17,7 @@ Motor right_back(13, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 MotorGroup right({ right_front_bottom, right_front_top, right_back });
 
 // Cata motor
-Motor cata_motor(10, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
+Motor cata_motor(1, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 
 
 // Intake motor
@@ -25,12 +25,12 @@ Motor intake_motor(20, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 
 bool wing_state = false;
 bool intake_state = false;
-ADIDigitalOut wing_cylinders('a', wing_state);
-ADIDigitalOut intake_cylinders('b', intake_state);
+ADIDigitalOut intake_cylinders('a', intake_state);
+ADIDigitalOut wing_cylinders('b', wing_state);
 
 Imu imu_sensor1(17);
 // Imu imu_sensor2(18); // Traded to Y Team for pneumatics
 
 // Rotation horizontal_tracker(2);
 // Rotation right_tracker(3);
-Rotation cata_tracker(1, true);
+Rotation cata_tracker(10, true);

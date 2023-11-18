@@ -24,7 +24,7 @@ public:
 					// cata_motor.brake()
 				}
 			}
-			cout << "Cata angle: " << cata_angle << endl;
+			// cout << "Cata angle: " << cata_angle << endl;
 			delay(10);
 		}
 	}
