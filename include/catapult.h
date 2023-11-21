@@ -4,6 +4,7 @@ class catapult {
 private:
 	bool is_cata_down = false;
 	bool cata_button_held = false;
+	int degrees = 5300;
 
 public:
 	void start() {
@@ -17,11 +18,13 @@ public:
 			if (cata_button_held) {
 				cata_motor.move(127);
 			} else {
-				if (cata_angle < 5500) { // Centidegrees
+				if (cata_angle <= degrees) { // Centidegrees
 					cata_motor.move(127);
+					degrees = 5300;
 				} else {
 					cata_motor.move(0);
-					// cata_motor.brake()
+					degrees = 4800;
+					// cata_motor.brake();
 				}
 			}
 			// cout << "Cata angle: " << cata_angle << endl;

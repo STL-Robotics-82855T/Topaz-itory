@@ -150,10 +150,13 @@ void autonomous() {
 
 
 	// Auton skills
-	// intake_motor.move(127);
-	// delay(50000);
-	// intake_motor.move(0);
-	// drive_line_auton(75);
+	intake_state = !intake_state;
+	intake_cylinders.set_value(intake_state);
+	
+	intake_motor.move(127);
+	delay(50000);
+	intake_motor.move(0);
+	drive_line_auton(75);
 
 
 	cout << "Autonomous ended" << endl;
