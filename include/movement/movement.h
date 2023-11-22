@@ -70,6 +70,7 @@ void turn_to_angle_auton(float target_heading, float timeout = -1) {
 
 /// @brief Drives in a straight line for a specified distance (Blocking)
 /// @param target_inches Distance to travel in inches
+/// @param timeout Time in milliseconds to stop the turn
 void drive_line_auton(float target_inches, float timeout = -1) {
 	
 	int start_time = millis();
@@ -152,6 +153,7 @@ void drive_line_auton(float target_inches, float timeout = -1) {
 /// @brief Drives for specified degrees on a curved circle
 /// @param radius Radius of imaginary circle
 /// @param degrees Degrees along the imaginary circle to travel
+/// @param timeout Time in milliseconds to stop the turn
 void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1) {
 	
 	int start_time = millis();
