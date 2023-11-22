@@ -15,6 +15,16 @@
 //odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
+void toggle_wing() {
+	wing_state = !wing_state;
+	wing_cylinders.set_value(wing_state);
+}
+
+void toggle_intake() {
+	intake_state = !intake_state;
+	intake_cylinders.set_value(intake_state);
+}
+
 /*
    --- Calculating Speed ---
    pi * 3.25 in = 10.210176124 in // Distance travelled per full rotation
@@ -94,7 +104,6 @@ void initialize() {
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
 	// Task odom_position_task([] { odom.get_current_position(); });
-	Task catapult_monitor([] { cata.start(); });
 
 	cout << "Initialized" << endl;
 }
@@ -150,13 +159,25 @@ void autonomous() {
 
 
 	// Auton skills
-	intake_state = !intake_state;
-	intake_cylinders.set_value(intake_state);
+	// intake_state = !intake_state;
+	// intake_cylinders.set_value(intake_state);
 	
-	intake_motor.move(127);
-	delay(50000);
-	intake_motor.move(0);
-	drive_line_auton(75);
+	// intake_motor.move(127);
+	// delay(50000);
+	// intake_motor.move(0);
+	// drive_line_auton(75);
+
+	toggle_wing();
+	move_circle_auton(15, -45, false);
+	drive_line_auton(-25);
+	toggle_wing();
+	drive_line_auton(20);
+	turn_to_angle_auton(-45);
+
+	//Temp auton
+	// move_circle_auton(12, 90, false);
+	// move_circle_auton(12, 90, true);
+
 
 
 	cout << "Autonomous ended" << endl;
@@ -166,6 +187,8 @@ void autonomous() {
 
 
 void opcontrol() {
+
+	Task catapult_monitor([] { cata.start(); });
 
 	int index = 0;
 	bool reverse_drive = false;
@@ -197,14 +220,12 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-			intake_state = !intake_state;
-			intake_cylinders.set_value(intake_state);
+			toggle_intake();
 
 		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
-			wing_state = !wing_state;
-			wing_cylinders.set_value(wing_state);
+			toggle_wing();
 		}
 
 		delay(5);
