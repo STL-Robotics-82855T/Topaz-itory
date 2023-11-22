@@ -4,7 +4,7 @@ class catapult {
 private:
 	bool is_cata_down = false;
 	bool cata_button_held = false;
-	int degrees = 5300;
+	int degrees = 5200;
 
 public:
 	void start() {
@@ -20,7 +20,7 @@ public:
 			} else {
 				if (cata_angle <= degrees) { // Centidegrees
 					cata_motor.move(127);
-					degrees = 5300;
+					degrees = 5200;
 				} else {
 					cata_motor.move(0);
 					degrees = 4800;

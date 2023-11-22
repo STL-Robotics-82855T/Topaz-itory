@@ -9,7 +9,7 @@ float map(float val, float in_min, float in_max, float out_min, float out_max) {
 /// @brief Turns n degrees clockwise (accepts negative) (Blocking)
 /// @param target_heading 0.0 - 360.0 degrees (0 is forward) (All degrees relative to the starting position of the robot)
 /// @param timeout Time in milliseconds to stop the turn
-void turn_to_angle_auton(float target_heading, float timeout = -1) {
+void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling = 1) {
 
 	int start_time = millis();
 
@@ -49,8 +49,8 @@ void turn_to_angle_auton(float target_heading, float timeout = -1) {
 		power = (current_error * P) + (build_up_error * I) + ((current_error - previous_error) * D);
 		previous_error = current_error;
 
-		left.move(-power);
-		right.move(power);
+		left.move(-power*scaling);
+		right.move(power*scaling);
 
 		if (timeout != -1) {
 			if (millis() > (start_time + timeout)) {
@@ -154,7 +154,7 @@ void drive_line_auton(float target_inches, float timeout = -1) {
 /// @param radius Radius of imaginary circle
 /// @param degrees Degrees along the imaginary circle to travel
 /// @param timeout Time in milliseconds to stop the turn
-void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1) {
+void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1, float scaling = 13) {
 	
 	int start_time = millis();
 
@@ -180,7 +180,7 @@ void move_circle_auton(float radius, float degrees, bool turn_left, float timeou
 	float P = 2.5;
 	float I = 0.025;
 	float D = 2.25;
-	float allowed_error = 0.75; // inches of error allowed
+	float allowed_error = 1.00; // inches of error allowed
 
 
 	float start_left_position = left[1].get_position();
@@ -197,7 +197,7 @@ void move_circle_auton(float radius, float degrees, bool turn_left, float timeou
 	float power_left;
 
 
-	while (abs(current_error_left) > allowed_error || abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 20 || abs(right[0].get_actual_velocity()) > 20) {
+	while (abs(current_error_left) > allowed_error || abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 30 || abs(right[0].get_actual_velocity()) > 30) {
 		current_error_right = right_distance - ((right[0].get_position() - start_right_position) * wheel_distance_per_encoder_rotation);
 		if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_right += current_error_right;
@@ -213,8 +213,8 @@ void move_circle_auton(float radius, float degrees, bool turn_left, float timeou
 		power_left = (current_error_left * P) + (build_up_error_left * I) + ((current_error_left - previous_error_left) * D);
 		previous_error_left = current_error_left;
 
-		power_right *= 12; // Tune this scaling factor
-		power_left *= 12;
+		power_right *= scaling; // Tune this scaling factor
+		power_left *= scaling;
 
 
 		// power_left = map(power_left, 0, 2, 0, 127);

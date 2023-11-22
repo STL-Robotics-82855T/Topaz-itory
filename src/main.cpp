@@ -168,11 +168,56 @@ void autonomous() {
 	// drive_line_auton(75);
 
 	toggle_wing();
-	move_circle_auton(15, -45, false);
-	drive_line_auton(-25);
+	move_circle_auton(15, -50, false, 1000);
+	turn_to_angle_auton(-10, 500);
 	toggle_wing();
+	// drive_line_auton(-25);
+	move_circle_auton(17, -16, false, 1000);
+	drive_line_auton(-18);
+	drive_line_auton(8);
+	// First 2 triballs in
+	turn_to_angle_auton(45, 690); // realign 90
+	drive_line_auton(9);
+	turn_to_angle_auton(58, 800, 2.7); // align to first ball
+	toggle_intake();
+	intake_motor.move(127);
+	drive_line_auton(33);
+	intake_motor.move(0);
+	drive_line_auton(-8);
+	turn_to_angle_auton(191, 780, 1); // align to net
+	drive_line_auton(17);
+	toggle_intake();
+	intake_motor.move(-127);
+	drive_line_auton(-15);
+	intake_motor.move(0);
+	// drive_line_auton(20); // if want to push in (prob takes too long)
+	// drive_line_auton(-5);
+	toggle_intake();
+	// third triball is scored
+	turn_to_angle_auton(97, 700, 1.5); // align to second ball
+	intake_motor.move(127);
+	drive_line_auton(28);
+	intake_motor.move(0);
+	drive_line_auton(-10);
+	turn_to_angle_auton(227, 850, 1.3); // align to net
+	toggle_wing();
+	drive_line_auton(24);
+	intake_motor.move(-127);
+	drive_line_auton(-10);
+	intake_motor.move(0);
+	drive_line_auton(14);
+	drive_line_auton(-25);
+	turn_to_angle_auton(135, 700, 1.3);
+	drive_line_auton(-20);
 	drive_line_auton(20);
-	turn_to_angle_auton(-45);
+
+	// toggle_wing();
+	// turn_to_angle_auton(1080, -1, 3); // spin for funni :)
+	// move_circle_auton(13, -75, false, -1, 20);
+	// drive_line_auton(-30);
+	// toggle_wing();
+
+
 
 	//Temp auton
 	// move_circle_auton(12, 90, false);
