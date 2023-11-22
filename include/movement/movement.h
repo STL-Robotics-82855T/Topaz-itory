@@ -8,7 +8,10 @@ float map(float val, float in_min, float in_max, float out_min, float out_max) {
 
 /// @brief Turns n degrees clockwise (accepts negative) (Blocking)
 /// @param target_heading 0.0 - 360.0 degrees (0 is forward) (All degrees relative to the starting position of the robot)
-void turn_to_angle_auton(float target_heading) {
+/// @param timeout Time in milliseconds to stop the turn
+void turn_to_angle_auton(float target_heading, float timeout = -1) {
+
+	int start_time = millis();
 
 	// PID constants
 	float P = 1.4;
@@ -49,6 +52,12 @@ void turn_to_angle_auton(float target_heading) {
 		left.move(-power);
 		right.move(power);
 
+		if (timeout != -1) {
+			if (millis() > (start_time + timeout)) {
+				break;
+			}
+		}
+
 		delay(10);
 
 	}
@@ -61,8 +70,9 @@ void turn_to_angle_auton(float target_heading) {
 
 /// @brief Drives in a straight line for a specified distance (Blocking)
 /// @param target_inches Distance to travel in inches
-void drive_line_auton(float target_inches) {
-
+void drive_line_auton(float target_inches, float timeout = -1) {
+	
+	int start_time = millis();
 
 	float wheel_distance_per_encoder_rotation = 3.25 * PI * (36.0 / 60.0); // inches per rotation
 
@@ -100,7 +110,7 @@ void drive_line_auton(float target_inches) {
 		if (abs(current_error_left) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_left += current_error_left;
 		}
-		
+
 		power_left = (current_error_left * P) + (build_up_error_left * I) + ((current_error_left - previous_error_left) * D);
 		previous_error_left = current_error_left;
 
@@ -121,7 +131,13 @@ void drive_line_auton(float target_inches) {
 
 		right.move(power_right);
 		left.move(power_left);
-	
+
+		if (timeout != -1) {
+			if (millis() > (start_time + timeout)) {
+				break;
+			}
+		}
+
 		delay(10);
 
 	}
@@ -136,7 +152,9 @@ void drive_line_auton(float target_inches) {
 /// @brief Drives for specified degrees on a curved circle
 /// @param radius Radius of imaginary circle
 /// @param degrees Degrees along the imaginary circle to travel
-void move_circle_auton(float radius, float degrees, bool turn_left) {
+void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1) {
+	
+	int start_time = millis();
 
 	float starting_angle = odom.current_heading_deg;
 
@@ -146,8 +164,8 @@ void move_circle_auton(float radius, float degrees, bool turn_left) {
 	// left side offset = 5.93 in
 	// right side offset = 5.93 in
 	// subtract the offset from the radius
-	float left_radius = radius + 6.0*(!turn_left) - 6.0*turn_left;
-	float right_radius = radius + 6.0*turn_left - 6.0*(!turn_left);
+	float left_radius = radius + 6.0 * (!turn_left) - 6.0 * turn_left;
+	float right_radius = radius + 6.0 * turn_left - 6.0 * (!turn_left);
 
 	float left_distance = left_radius * (degrees / 360.0) * 2 * PI;
 	float right_distance = right_radius * (degrees / 360.0) * 2 * PI;
@@ -189,7 +207,7 @@ void move_circle_auton(float radius, float degrees, bool turn_left) {
 		if (abs(current_error_left) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_left += current_error_left;
 		}
-		
+
 		power_left = (current_error_left * P) + (build_up_error_left * I) + ((current_error_left - previous_error_left) * D);
 		previous_error_left = current_error_left;
 
@@ -210,7 +228,13 @@ void move_circle_auton(float radius, float degrees, bool turn_left) {
 
 		right.move(power_right);
 		left.move(power_left);
-	
+
+		if (timeout != -1) {
+			if (millis() > (start_time + timeout)) {
+				break;
+			}
+		}
+
 		delay(10);
 
 	}
@@ -225,7 +249,7 @@ void move_circle_auton(float radius, float degrees, bool turn_left) {
 	// } else {
 	// 	turn_to_angle_auton(starting_angle + degrees);
 	// }
-	
+
 
 
 }
