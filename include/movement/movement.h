@@ -17,7 +17,7 @@ void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling
 	float P = 1.4;
 	float I = 0.03;
 	float D = 3.4;
-	float current_error = current_error = abs(target_heading - odom.current_heading_deg);
+	float current_error = abs(target_heading - odom.current_heading_deg);
 	float previous_error = 0;
 	float build_up_error = 0;
 	float allowed_error = 1; // degrees of error allowed

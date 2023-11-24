@@ -94,15 +94,17 @@ public:
 			offset_theta = atan2f(local_offset.second, local_offset.first);
 			offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
 
-			if (index == 50) {
-				cout << local_offset.first << " " << local_offset.second << " " << offset_theta << endl;
+			if (index == 100) {
+				cout << absolute_position.first << " " << absolute_position.second << " " << current_heading_deg << endl;
 
-				lcd::print(0, "theta (deg): %.2f", offset_theta * 180 / PI);
-				delay(50);
-				lcd::print(1, "X: %.2f", local_offset.first);
-				delay(50);
-				lcd::print(2, "Y: %.2f", local_offset.second);
-				delay(500);
+				// cout << local_offset.first << " " << local_offset.second << " " << offset_theta << endl;
+
+				// master.print(0, 0, "theta (deg): %.2f", (offset_theta * 180 / PI));
+				// delay(50);
+				// master.print(1, 0, "X: %.2f", local_offset.first);
+				// delay(50);
+				// master.print(2, 0, "Y: %.2f", local_offset.second);
+				// delay(50);
 
 				index = 0;
 			}
