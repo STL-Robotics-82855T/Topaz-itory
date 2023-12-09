@@ -103,7 +103,7 @@ void initialize() {
 	reset_sensors();
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
-	Task odom_position_task([] { odom.get_current_position(); });
+	// Task odom_position_task([] { odom.get_current_position(); });
 
 	cout << "Initialized" << endl;
 }
@@ -117,81 +117,51 @@ void autonomous() {
 
 	cout << "Autonomous started" << endl;
 
-
-	// Left side auton
-
-	// drive_line_auton(5);
-	// delay(500);
-	// turn_to_angle_auton(-60);
-	// delay(1000);
-	// drive_line_auton(20);
-	// delay(500);
-	// intake_motor.move(-100);
-	// delay(1000);
-	// intake_motor.move(0);
-	// drive_line_auton(10);
-	// delay(50);
-	// turn_to_angle_auton(0);
-	// delay(50);
-	// drive_line_auton(50);
-	// delay(50);
-	// drive_line_auton(-60);
-
-	// Auton skills
-	// intake_state = !intake_state;
-	// intake_cylinders.set_value(intake_state);
-	
-	// intake_motor.move(127);
-	// delay(50000);
-	// intake_motor.move(0);
-	// drive_line_auton(75);
-
-
 	// Close side (not shooter) auton
-	// toggle_wing();
-	// move_circle_auton(15, -50, false, 1000);
-	// turn_to_angle_auton(-10, 500);
-	// toggle_wing();
-	// // drive_line_auton(-25);
-	// move_circle_auton(17, -16, false, 1000);
-	// drive_line_auton(-18);
-	// drive_line_auton(8);
-	// // First 2 triballs in
-	// turn_to_angle_auton(45, 690); // realign 90
-	// drive_line_auton(9);
-	// turn_to_angle_auton(58, 800, 2.7); // align to first ball
-	// toggle_intake();
-	// intake_motor.move(127);
-	// drive_line_auton(33);
-	// intake_motor.move(0);
-	// drive_line_auton(-8);
-	// turn_to_angle_auton(191, 780, 1); // align to net
-	// drive_line_auton(17);
-	// toggle_intake();
-	// intake_motor.move(-127);
-	// drive_line_auton(-15);
-	// intake_motor.move(0);
-	// // drive_line_auton(20); // if want to push in (prob takes too long)
-	// // drive_line_auton(-5);
-	// toggle_intake();
-	// // third triball is scored
-	// turn_to_angle_auton(97, 700, 1.5); // align to second ball
-	// intake_motor.move(127);
-	// drive_line_auton(28);
-	// intake_motor.move(0);
-	// drive_line_auton(-10);
-	// turn_to_angle_auton(227, 850, 1.3); // align to net
-	// toggle_wing();
-	// drive_line_auton(24);
-	// intake_motor.move(-127);
-	// drive_line_auton(-10);
-	// intake_motor.move(0);
-	// drive_line_auton(14);
+	toggle_wing();
+	move_circle_auton(15, -50, false, 1000);
+	turn_to_angle_auton(-10, 500);
+	toggle_wing();
 	// drive_line_auton(-25);
-	// turn_to_angle_auton(135, 700, 1.3);
-	// drive_line_auton(-20);
-	// drive_line_auton(20);
-	// toggle_wing();
+	move_circle_auton(17, -16, false, 1000);
+	drive_line_auton(-18);
+	drive_line_auton(8);
+	// First 2 triballs in
+	turn_to_angle_auton(45, 690); // realign 90
+	drive_line_auton(9);
+	turn_to_angle_auton(58, 800, 2.7); // align to first ball
+	toggle_intake();
+	intake_motor.move(127);
+	drive_line_auton(33);
+	intake_motor.move(0);
+	drive_line_auton(-8);
+	turn_to_angle_auton(191, 780, 1); // align to net
+	drive_line_auton(17);
+	toggle_intake();
+	intake_motor.move(-127);
+	drive_line_auton(-15);
+	intake_motor.move(0);
+	// drive_line_auton(20); // if want to push in (prob takes too long)
+	// drive_line_auton(-5);
+	toggle_intake();
+	// third triball is scored
+	turn_to_angle_auton(97, 700, 1.5); // align to second ball
+	intake_motor.move(127);
+	drive_line_auton(28);
+	intake_motor.move(0);
+	drive_line_auton(-10);
+	turn_to_angle_auton(227, 850, 1.3); // align to net
+	toggle_wing();
+	drive_line_auton(24);
+	intake_motor.move(-127);
+	drive_line_auton(-10);
+	intake_motor.move(0);
+	drive_line_auton(14);
+	drive_line_auton(-25);
+	turn_to_angle_auton(135, 700, 1.3);
+	drive_line_auton(-20);
+	drive_line_auton(20);
+	toggle_wing();
 
 	// Far side (shooter) auton
 	// move_circle_auton(30, 45, false, 900, 3);
@@ -223,37 +193,37 @@ void autonomous() {
 	// drive_line_auton(-28); // hit cata to bar
 
 	// Auton skills far side (shooter)
-	left.move(12);
-	right.move(12);
-	int cata_launches = 0;
-	bool has_counted = false;
-	while (true) {
-		cata_motor.move(127);
-		if (cata_tracker.get_position() < 2000) {
-			if (!has_counted) {
-				cata_launches++; 
-				has_counted = true;
-			}
-		} else if (cata_tracker.get_position() > 3000) {
-			has_counted = false;
-		}
-		if (cata_launches == 51) {
-			break;
-		}
-		master.print(0, 0, "Cata launches: %d", cata_launches-1);
-		delay(50);
-	}
-	left.move(0);
-	right.move(0);
-	cata_motor.move(0);
-	turn_to_angle_auton(25, 750, 3);
-	drive_line_auton(-95);
-	turn_to_angle_auton(-35, 750, 3);
-	drive_line_auton(-25);
-	drive_line_auton(15);
-	drive_line_auton(-20);
-	drive_line_auton(20);
-	drive_line_auton(-20);
+	// left.move(12);
+	// right.move(12);
+	// int cata_launches = 0;
+	// bool has_counted = false;
+	// while (true) {
+	// 	cata_motor.move(127);
+	// 	if (cata_tracker.get_position() < 2000) {
+	// 		if (!has_counted) {
+	// 			cata_launches++; 
+	// 			has_counted = true;
+	// 		}
+	// 	} else if (cata_tracker.get_position() > 3000) {
+	// 		has_counted = false;
+	// 	}
+	// 	if (cata_launches == 51) {
+	// 		break;
+	// 	}
+	// 	master.print(0, 0, "Cata launches: %d", cata_launches-1);
+	// 	delay(50);
+	// }
+	// left.move(0);
+	// right.move(0);
+	// cata_motor.move(0);
+	// turn_to_angle_auton(25, 750, 3);
+	// drive_line_auton(-95);
+	// turn_to_angle_auton(-35, 750, 3);
+	// drive_line_auton(-25);
+	// drive_line_auton(15);
+	// drive_line_auton(-20);
+	// drive_line_auton(20);
+	// drive_line_auton(-20);
 
 
 

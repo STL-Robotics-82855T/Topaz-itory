@@ -16,17 +16,18 @@ public:
 			// FIGURE OUT START ANGLE OF CATAPULT (exact value)
 			cata_angle = cata_tracker.get_position();
 			if (cata_button_held) {
-				cata_motor.move(127);
-			} else {
-				if (cata_angle <= degrees) { // Centidegrees
-					cata_motor.move(127);
-					degrees = 5250;
-				} else {
-					cata_motor.move(0);
-					degrees = 4750;
-					// cata_motor.brake();
-				}
+				cata_motor.move(110);
 			}
+			// else {
+			// 	if (cata_angle <= degrees) { // Centidegrees
+			// 		cata_motor.move(127);
+			// 		degrees = 5250;
+			else {
+				cata_motor.move(0);
+				degrees = 4750;
+				// cata_motor.brake();
+			}
+			// }
 			// cout << "Cata angle: " << cata_angle << endl;
 			delay(10);
 		}
