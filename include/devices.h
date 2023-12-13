@@ -23,10 +23,13 @@ Motor cata_motor(1, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 // Intake motor
 Motor intake_motor(20, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
 
-bool wing_state = false;
+bool wing_state_1 = false;
+bool wing_state_2 = false;
 bool intake_state = false;
 ADIDigitalOut intake_cylinders('a', intake_state);
-ADIDigitalOut wing_cylinders('b', wing_state);
+ADIDigitalOut wing_cylinder_1('b', wing_state_1);
+ADIDigitalOut wing_cylinder_2('h', wing_state_2);
+
 
 Imu imu_sensor1(17);
 // Imu imu_sensor2(18); // Traded to Y Team for pneumatics

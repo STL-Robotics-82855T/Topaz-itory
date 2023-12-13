@@ -15,10 +15,16 @@
 //odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
-void toggle_wing() {
-	wing_state = !wing_state;
-	wing_cylinders.set_value(wing_state);
+void toggle_wing_1() {
+	wing_state_1 = !wing_state_1;
+	wing_cylinder_1.set_value(wing_state_1);
 }
+
+void toggle_wing_2() {
+	wing_state_2 = !wing_state_2;
+	wing_cylinder_2.set_value(wing_state_2);
+}
+
 
 void toggle_intake() {
 	intake_state = !intake_state;
@@ -118,10 +124,10 @@ void autonomous() {
 	cout << "Autonomous started" << endl;
 
 	// Close side (not shooter) auton
-	toggle_wing();
+	// toggle_wing(); // start with wing out
 	move_circle_auton(15, -50, false, 1000);
 	turn_to_angle_auton(-10, 500);
-	toggle_wing();
+	// toggle_wing();
 	// drive_line_auton(-25);
 	move_circle_auton(17, -16, false, 1000);
 	drive_line_auton(-18);
@@ -151,7 +157,7 @@ void autonomous() {
 	intake_motor.move(0);
 	drive_line_auton(-10);
 	turn_to_angle_auton(227, 850, 1.3); // align to net
-	toggle_wing();
+	// toggle_wing();
 	drive_line_auton(24);
 	intake_motor.move(-127);
 	drive_line_auton(-10);
@@ -161,7 +167,7 @@ void autonomous() {
 	turn_to_angle_auton(135, 700, 1.3);
 	drive_line_auton(-20);
 	drive_line_auton(20);
-	toggle_wing();
+	// toggle_wing();
 
 	// Far side (shooter) auton
 	// move_circle_auton(30, 45, false, 900, 3);
@@ -273,7 +279,8 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
-			toggle_wing();
+			toggle_wing_1();
+			toggle_wing_2();
 		}
 
 		delay(5);
