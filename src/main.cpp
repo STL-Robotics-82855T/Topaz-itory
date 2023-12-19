@@ -1,6 +1,11 @@
 #include "main.h"
 #include "devices.h" // Defines motors, controller, sensors and helper functions
 #include "./movement/odometry.h" // Defines odometry class
+
+
+// Needs to be declared before movement class
+odometry odom(6.02, 3.25);
+
 #include "./movement/movement.h" // Defines movement class
 #include "catapult.h" // The catapult functions
 
@@ -12,7 +17,6 @@
 // Wheel diameter: 3.25"
 
 // Constants
-//odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
 

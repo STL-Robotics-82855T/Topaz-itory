@@ -2,20 +2,17 @@
 
 class odometry {
 public:
-	float current_angle_deg;
+	float current_angle_deg; // angle in degrees
 	float current_angle_rad;
-	float current_heading_deg;
+	float current_heading_deg; // absolute heading in degrees (0-360)
 	float inches_per_second;
-	float inches_per_rotation;
-	pair<float, float> absolute_position = { 0.0, 0.0 };
+	pair<float, float> absolute_position = { 0.0, 0.0 }; // x is left-right, y is forward-backward, measured in inches
 
 	// Constructor
-	odometry(float left_offset, float right_offset, float back_offset, float wheel_size) {
-		left_offset = left_offset;
-		right_offset = right_offset;
-		back_offset = back_offset;
-		wheel_size = wheel_size;
-		inches_per_rotation = wheel_size * PI;
+	odometry(float _wheel_offset, float _wheel_diameter) {
+		wheel_offset = _wheel_offset;
+		wheel_diameter = _wheel_diameter;
+		
 	}
 
 	/// @brief Gets the current angle of the robot, updates every 5ms
@@ -39,89 +36,65 @@ public:
 		}
 	}
 
-	/// @brief Gets the cyurrent direction of the robot, updates every 10ms
+	/// @brief Gets the current position of the robot, updates every 10ms
 	void get_current_position() {
-		// Positions are measured in number of motor rotations (not degrees)
-		float prev_left_pos = 0;
-		float prev_right_pos = 0;
-		float prev_horizontal_pos = 0;
-		float left_pos = 0;
-		float right_pos = 0;
-		float horizontal_pos = 0;
 
-		// Measured in rad
-		float previous_angle = 0;
-		float angle_delta;
-		float offset_theta = 0;
-		float offset_radius = 0;
+		const float inches_per_rotation = wheel_diameter * PI;
 
-		// Distances are measured in inches
-		float left_side_distance_delta = 0;
-		float right_side_distance_delta = 0;
-		float horizontal_distance_delta = 0;
+		float previous_forward_encoder = right[0].get_position(); // using encoders for now (units in rotations)
+		
 
-		int index = 0;
+		float forward_encoder;
+		float forward_encoder_delta;
+		float forward_distance_delta;
+
+		float previous_angle_deg = odom.current_angle_deg; // check if this should be degrees or heading
+		float angle_delta_deg;
+
+		float theta_rad;
+		float thetaM_rad;
+		float radius;
 
 		while (true) {
-			// 36:60 gearing
-			left_pos = left_front_bottom.get_position() * (36.0 / 60.0);
-			right_pos = right_front_bottom.get_position() * (36.0 / 60.0);
 
-			// horizontal_pos = (float)horizontal_tracker.get_position()/36000.0;
-			// right_pos = (float)right_tracker.get_position() / 36000.0;
+			forward_encoder = right[0].get_position();
+			forward_encoder_delta = forward_encoder - previous_forward_encoder;
+			forward_distance_delta = forward_encoder_delta * inches_per_rotation;
 
-			// ΔL and ΔR
-			// left_side_distance_delta = (left_pos - prev_left_pos) * inches_per_rotation;
-			right_side_distance_delta = (right_pos - prev_right_pos) * inches_per_rotation;
+			previous_forward_encoder = forward_encoder;
 
-			// ΔS
-			horizontal_distance_delta = (horizontal_pos - prev_horizontal_pos) * inches_per_rotation;
-			horizontal_distance_delta = horizontal_distance_delta - back_offset * angle_delta;
+			angle_delta_deg = odom.current_angle_deg - previous_angle_deg;
 
-			// Δθ
-			angle_delta = smart_radian_diff(current_angle_rad, previous_angle);
 
-			// Update position
-			if (angle_delta == 0) { // Straight line or no movement
-				local_offset.first = horizontal_distance_delta;
-				local_offset.second = right_side_distance_delta;
-			} else { // Arc
-				local_offset.first = (horizontal_distance_delta / angle_delta + back_offset) * (2 * sin(angle_delta / 2));
-				local_offset.second = (right_side_distance_delta / angle_delta + right_offset) * (2 * sin(angle_delta / 2));
+			// Since we have traction wheels, we can assume the robot doesn't slide sideways
+
+			if (angle_delta_deg == 0) {
+				// Straight line movement
+				local_offset.second += forward_distance_delta;
+
+				local_offset.first = 0.0; // No sideways movement since we have traction wheels
+			} else {
+				// Arc movement
+				local_offset.second += (2*sin_degrees(angle_delta_deg/2) * (forward_distance_delta/angle_delta_deg + wheel_offset));
+				local_offset.first = 0.0; // No sideways movement since we have traction wheels
 			}
 
-			// Rotate offset vector to match robot's current heading
-			offset_theta = atan2f(local_offset.second, local_offset.first);
-			offset_radius = sqrt(pow(local_offset.first, 2) + pow(local_offset.second, 2));
+			// Update absolute position
+			
+			theta_rad = atan2f(local_offset.second, local_offset.first);
+			radius = local_offset.second; // Simplified from pythagorean theorem, since x is always 0
+			thetaM_rad = previous_angle_deg + angle_delta_deg/2;
+			theta_rad -= thetaM_rad;
+			
+			local_offset.first = radius * cos(theta_rad);
+			local_offset.second = radius * sin(theta_rad);
 
-			if (index == 100) {
-				cout << absolute_position.first << " " << absolute_position.second << " " << current_heading_deg << endl;
-
-				// cout << local_offset.first << " " << local_offset.second << " " << offset_theta << endl;
-
-				// master.print(0, 0, "theta (deg): %.2f", (offset_theta * 180 / PI));
-				// delay(50);
-				// master.print(1, 0, "X: %.2f", local_offset.first);
-				// delay(50);
-				// master.print(2, 0, "Y: %.2f", local_offset.second);
-				// delay(50);
-
-				index = 0;
-			}
-			index++;
-
-			offset_theta -= current_angle_rad + angle_delta / 2;
-			local_offset.first = offset_radius * cos(offset_theta);
-			local_offset.second = offset_radius * sin(offset_theta);
+			// Update previous angle
+			previous_angle_deg = odom.current_angle_deg;
 
 			// Update absolute position
 			absolute_position.first += local_offset.first;
 			absolute_position.second += local_offset.second;
-
-			previous_angle = current_angle_rad;
-			// prev_left_pos = left_pos;
-			prev_right_pos = right_pos;
-			prev_horizontal_pos = horizontal_pos;
 
 			delay(10);
 		}
@@ -129,26 +102,13 @@ public:
 
 private:
 	// Offsets are measured in inches
-	float left_offset;  // Inches measured from the center of the robot
-	float right_offset; // Inches measured from the center of the robot
-	float back_offset;  // Inches measured from the center of the robot
-	float wheel_size;   // Diameter measured in inches
-	float wheel_rpm;
-	float motor_rpm;
-	pair<float, float> local_offset = { 0.0, 0.0 }; // Measured in inches
 
-	/// @brief Calculates the difference between two angles in radians, always returns the smallest difference
-	/// @param rad1
-	/// @param rad2
-	/// @return Difference between the two angles in radians
-	float smart_radian_diff(float rad1, float rad2) {
-		float diff = rad1 - rad2;
-		if (diff >= PI) {
-			diff -= 2 * PI;
-		}
-		if (diff < -PI) {
-			diff += 2 * PI;
-		}
-		return diff;
+	float wheel_offset; // Distance between the wheel and the COR of the robot
+	float wheel_diameter;   // Diameter measured in inches
+	pair<float, float> local_offset = { 0.0, 0.0 }; // x is left-right, y is forward-backward, measured in inches
+
+	float sin_degrees(float degrees) {
+		return sin(degrees * (PI / 180.0));
 	}
+
 };
