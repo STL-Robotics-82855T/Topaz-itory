@@ -48,8 +48,8 @@ public:
 		float forward_encoder_delta;
 		float forward_distance_delta;
 
-		float previous_angle_deg = odom.current_angle_deg; // check if this should be degrees or heading
-		float angle_delta_deg;
+		float previous_angle_rad = current_angle_rad; // check if this should be degrees or heading
+		float angle_delta_rad;
 
 		float theta_rad;
 		float thetaM_rad;
@@ -63,34 +63,33 @@ public:
 
 			previous_forward_encoder = forward_encoder;
 
-			angle_delta_deg = odom.current_angle_deg - previous_angle_deg;
+			angle_delta_rad = current_angle_rad - previous_angle_rad;
 
 
 			// Since we have traction wheels, we can assume the robot doesn't slide sideways
 
-			if (angle_delta_deg == 0) {
+			if (angle_delta_rad == 0) {
 				// Straight line movement
 				local_offset.second += forward_distance_delta;
-
 				local_offset.first = 0.0; // No sideways movement since we have traction wheels
 			} else {
 				// Arc movement
-				local_offset.second += (2*sin_degrees(angle_delta_deg/2) * (forward_distance_delta/angle_delta_deg + wheel_offset));
+				local_offset.second += (2*sin(angle_delta_rad/2) * (forward_distance_delta/angle_delta_rad + wheel_offset));
 				local_offset.first = 0.0; // No sideways movement since we have traction wheels
 			}
 
-			// Update absolute position
+			thetaM_rad = previous_angle_rad + angle_delta_rad/2;
 			
-			theta_rad = atan2f(local_offset.second, local_offset.first);
+			// theta_rad = atan2f(local_offset.second, local_offset.first);
+			theta_rad = 90*(PI/180); // Since x offset is always 0, we can simplify this to 90 degrees (Check if this should be 90 or 0)
 			radius = local_offset.second; // Simplified from pythagorean theorem, since x is always 0
-			thetaM_rad = previous_angle_deg + angle_delta_deg/2;
 			theta_rad -= thetaM_rad;
 			
 			local_offset.first = radius * cos(theta_rad);
 			local_offset.second = radius * sin(theta_rad);
 
 			// Update previous angle
-			previous_angle_deg = odom.current_angle_deg;
+			previous_angle_rad = current_angle_rad;
 
 			// Update absolute position
 			absolute_position.first += local_offset.first;
