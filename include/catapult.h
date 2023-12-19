@@ -12,7 +12,7 @@ public:
 		// cata_motor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 		while (true) {
 			// Press right bumper to shoot
-			cata_button_held = master.get_digital(E_CONTROLLER_DIGITAL_R1);
+			cata_button_held = master.get_digital(E_CONTROLLER_DIGITAL_L2);
 			// FIGURE OUT START ANGLE OF CATAPULT (exact value)
 			cata_angle = cata_tracker.get_position();
 			if (cata_button_held) {

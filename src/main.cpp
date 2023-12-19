@@ -15,6 +15,9 @@
 //odometry odom(6.02, 6.02, 0.73, 3.25);
 catapult cata;
 
+
+/// @brief Toggles the wing
+/// @param delay_time Delay in ms for the wing to actuate
 void toggle_wing_1() {
 	wing_state_1 = !wing_state_1;
 	wing_cylinder_1.set_value(wing_state_1);
@@ -123,88 +126,99 @@ void autonomous() {
 
 	cout << "Autonomous started" << endl;
 
-	// Close side (not shooter) auton
-	// toggle_wing(); // start with wing out
-	move_circle_auton(15, -50, false, 1000);
-	turn_to_angle_auton(-10, 500);
-	// toggle_wing();
-	// drive_line_auton(-25);
-	move_circle_auton(17, -16, false, 1000);
-	drive_line_auton(-18);
-	drive_line_auton(8);
-	// First 2 triballs in
-	turn_to_angle_auton(45, 690); // realign 90
-	drive_line_auton(9);
-	turn_to_angle_auton(58, 800, 2.7); // align to first ball
-	toggle_intake();
-	intake_motor.move(127);
-	drive_line_auton(33);
-	intake_motor.move(0);
-	drive_line_auton(-8);
-	turn_to_angle_auton(191, 780, 1); // align to net
-	drive_line_auton(17);
-	toggle_intake();
-	intake_motor.move(-127);
-	drive_line_auton(-15);
-	intake_motor.move(0);
-	// drive_line_auton(20); // if want to push in (prob takes too long)
-	// drive_line_auton(-5);
-	toggle_intake();
-	// third triball is scored
-	turn_to_angle_auton(97, 700, 1.5); // align to second ball
-	intake_motor.move(127);
-	drive_line_auton(28);
-	intake_motor.move(0);
-	drive_line_auton(-10);
-	turn_to_angle_auton(227, 850, 1.3); // align to net
-	// toggle_wing();
-	drive_line_auton(24);
-	intake_motor.move(-127);
-	drive_line_auton(-10);
-	intake_motor.move(0);
-	drive_line_auton(14);
+
+	// close to net side auton
+
+	intake_motor.move(127); // to keep ball in
+
+	drive_line_auton(5);
 	drive_line_auton(-25);
-	turn_to_angle_auton(135, 700, 1.3);
-	drive_line_auton(-20);
-	drive_line_auton(20);
-	// toggle_wing();
 
-	// Far side (shooter) auton
-	// move_circle_auton(30, 45, false, 900, 3);
+	left.move(-105);
+	right.move(-45);
+	delay(300);
+	toggle_wing_1();
+	delay(300);
+	left.set_brake_modes(E_MOTOR_BRAKE_HOLD);
+	right.set_brake_modes(E_MOTOR_BRAKE_HOLD);
+	left.move(0);
+	right.move(0);
+	left.brake();
+	right.brake();
+	delay(100);
+	left.set_brake_modes(E_MOTOR_BRAKE_COAST);
+	right.set_brake_modes(E_MOTOR_BRAKE_COAST);
 
-	// toggle_intake();
+	drive_line_auton(-4);
+	turn_to_angle_auton(-85, 1000, 3);
+	toggle_wing_1();
+	drive_line_auton(-25,false, 1000);
+	drive_line_auton(10, false, 1000);
+	turn_to_angle_auton(-250, 2000, 1);
+	intake_motor.move(-127);
+	drive_line_auton(20, false, 1000);
+	drive_line_auton(-15);
+	turn_to_angle_auton(100, 1000, 3);
+	intake_motor.move(0);
+	drive_line_auton(20, false, 1000);
+	intake_motor.move(-127);
+	drive_line_auton(-10, false, 1000);
+	intake_motor.move(0);
+
+
+
+	// turn_to_angle_auton(90, 800);
 	// intake_motor.move(-127);
 	// drive_line_auton(6);
-	// drive_line_auton(-10);
 	// intake_motor.move(0);
-	// drive_line_auton(13); // alliance ball in
 
-	// turn_to_angle_auton(30, 400, 2.1);
-	// toggle_wing();
-	// drive_line_auton(-18); // match load out (hopefully)
-	// turn_to_angle_auton(-90, 750, 1.3);
-
-	// move_circle_auton(30, -30, true, 2000, 3);
-	// move_circle_auton(34, -45, false, 2000, 5);
-	// turn_to_angle_auton(-135, 1000, 3); // align to two balls
-	// drive_line_auton(-18);
-	// toggle_wing();
-	// drive_line_auton(17);
-	// turn_to_angle_auton(-90, 750, 1.3); // start going back
+	// drive_line_auton(-7);
+	// turn_to_angle_auton(180, 1500);
+	
+	// drive_line_auton(44);
+	// turn_to_angle_auton(-90, 800);
 	// drive_line_auton(20);
-	// turn_to_angle_auton(-135, 1000, 3);
-	// drive_line_auton(13);
-	// toggle_intake();
-	// turn_to_angle_auton(-45, 800, 1.3);
-	// drive_line_auton(-28); // hit cata to bar
+	// toggle_wing_2();
+	// wing_state_1 = !wing_state_1; // to prevent see-saw
 
-	// Auton skills far side (shooter)
-	// left.move(12);
-	// right.move(12);
+
+	// Far side (shooter) auton
+	
+	// intake_motor.move(70); // to keep ball in
+	// toggle_wing_1();
+	// turn_to_angle_auton(-90, 800, 5);
+	// toggle_wing_1();
+	// drive_line_auton(10);
+	// turn_to_angle_auton(45, 800, 4);
+	// drive_line_auton(5);
+	// intake_motor.move(-127);
+	// drive_line_auton(8);
+	// drive_line_auton(-10);
+	// turn_to_angle_auton(225, 2500, 5);
+	// intake_motor.move(0);
+	// drive_line_auton(-10);
+	// drive_line_auton(15);
+
+	// backup far side (point toward net and drive straight)
+	// intake_motor.move(70); // to keep ball in
+	// drive_line_auton(25);
+	// intake_motor.move(-127);
+	// delay(500);
+	// intake_motor.move(0);
+	// drive_line_auton(-10);
+	// drive_line_auton(30);
+
+
+
+	// Skills auton
+	// turn_to_angle_auton(-35, 500, 2);
+	// toggle_intake();
+	// left.move(6);
+	// right.move(5);
 	// int cata_launches = 0;
 	// bool has_counted = false;
 	// while (true) {
-	// 	cata_motor.move(127);
+	// 	cata_motor.move(110);
 	// 	if (cata_tracker.get_position() < 2000) {
 	// 		if (!has_counted) {
 	// 			cata_launches++; 
@@ -213,23 +227,49 @@ void autonomous() {
 	// 	} else if (cata_tracker.get_position() > 3000) {
 	// 		has_counted = false;
 	// 	}
-	// 	if (cata_launches == 51) {
+	// 	if (cata_launches == 48) {
 	// 		break;
 	// 	}
 	// 	master.print(0, 0, "Cata launches: %d", cata_launches-1);
 	// 	delay(50);
+
+	// 	if (odom.current_angle_deg > -18) {
+	// 		right.move(12);
+	// 		left.move(5);
+	// 	} else if (odom.current_angle_deg < -22) {
+	// 		right.move(5);
+	// 		left.move(12);
+	// 	}
 	// }
+	// cata_motor.move(0);
 	// left.move(0);
 	// right.move(0);
+	// turn_to_angle_auton(0, 15, 2);
+	// drive_line_auton(-5);
+	// turn_to_angle_auton(195, 3000, 3);
+
+	// cata_motor.move(127);
+	// delay(250);
 	// cata_motor.move(0);
-	// turn_to_angle_auton(25, 750, 3);
-	// drive_line_auton(-95);
-	// turn_to_angle_auton(-35, 750, 3);
-	// drive_line_auton(-25);
-	// drive_line_auton(15);
-	// drive_line_auton(-20);
+	// toggle_intake();
+	// intake_motor.move(127);
+	// drive_line_auton(80);
+
+	
+	// turn_to_angle_auton(130, 2000, 3);
+	// drive_line_auton(30);
+	// drive_line_auton(-15);
+	// turn_to_angle_auton(60);
+	// drive_line_auton(50);
+	// turn_to_angle_auton(180);
+	// toggle_wing_1();
+	// toggle_wing_2();
+	// intake_motor.move(-127);
+	// drive_line_auton(30);
+	// drive_line_auton(-15);
 	// drive_line_auton(20);
-	// drive_line_auton(-20);
+	// intake_motor.move(0);
+
 
 
 
@@ -265,9 +305,10 @@ void opcontrol() {
 		left.move(left_power);
 		right.move(right_power);
 
-		if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+		// Parsa Controls
+		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
 			intake_motor.move(127);
-		} else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
 			intake_motor.move(-127);
 		} else {
 			intake_motor.move(0);
@@ -278,10 +319,30 @@ void opcontrol() {
 
 		}
 
-		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
 			toggle_wing_1();
 			toggle_wing_2();
 		}
+
+
+		// Ryan Controls
+		// if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+		// 	intake_motor.move(127);
+		// } else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+		// 	intake_motor.move(-127);
+		// } else {
+		// 	intake_motor.move(0);
+		// }
+
+		// if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+		// 	toggle_intake();
+
+		// }
+
+		// if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
+		// 	toggle_wing_1();
+		// 	toggle_wing_2();
+		// }
 
 		delay(5);
 	}

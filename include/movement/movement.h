@@ -9,7 +9,7 @@ float map(float val, float in_min, float in_max, float out_min, float out_max) {
 /// @brief Turns n degrees clockwise (accepts negative) (Blocking)
 /// @param target_heading 0.0 - 360.0 degrees (0 is forward) (All degrees relative to the starting position of the robot)
 /// @param timeout Time in milliseconds to stop the turn
-void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling = 1) {
+void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling = 1, bool chainable = false) {
 
 	int start_time = millis();
 
@@ -25,7 +25,7 @@ void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling
 
 	cout << "Turning to angle: " << target_heading << endl;
 
-	while (abs(current_error) > allowed_error || abs(left[1].get_actual_velocity()) > 15 || abs(right[0].get_actual_velocity()) > 15) {
+	while (abs(current_error) > allowed_error || ((abs(left[1].get_actual_velocity()) > 15 || abs(right[0].get_actual_velocity()) > 15) && !chainable)) {
 		current_error = abs(target_heading - odom.current_heading_deg);
 		if (current_error > 180) { // If the error is greater than 180 degrees, the robot should turn the other way
 			current_error = 360 - current_error;
@@ -71,7 +71,7 @@ void turn_to_angle_auton(float target_heading, float timeout = -1, float scaling
 /// @brief Drives in a straight line for a specified distance (Blocking)
 /// @param target_inches Distance to travel in inches
 /// @param timeout Time in milliseconds to stop the turn
-void drive_line_auton(float target_inches, float timeout = -1) {
+void drive_line_auton(float target_inches, bool chainable = false, float timeout = -1, float scaling = 0) {
 	
 	int start_time = millis();
 
@@ -99,7 +99,9 @@ void drive_line_auton(float target_inches, float timeout = -1) {
 
 	cout << "Driving straight for: " << target_inches << endl;
 
-	while (abs(current_error_left) > allowed_error || abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 20 || abs(right[0].get_actual_velocity()) > 20) {
+	while (abs(current_error_left) > allowed_error || abs(current_error_right) > allowed_error || ((abs(left[1].get_actual_velocity()) > 15 || abs(right[0].get_actual_velocity()) > 15) && !chainable)) {
+				
+				
 		current_error_right = target_inches - ((right[0].get_position() - start_right_position) * wheel_distance_per_encoder_rotation);
 		if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
 			build_up_error_right += current_error_right;
@@ -115,8 +117,8 @@ void drive_line_auton(float target_inches, float timeout = -1) {
 		power_left = (current_error_left * P) + (build_up_error_left * I) + ((current_error_left - previous_error_left) * D);
 		previous_error_left = current_error_left;
 
-		power_right *= 20; // Tune this scaling factor
-		power_left *= 20;
+		power_right *= 20+scaling; // Tune this scaling factor
+		power_left *= 20+scaling;
 
 
 		// power_left = map(power_left, 0, 2, 0, 127);
@@ -154,7 +156,7 @@ void drive_line_auton(float target_inches, float timeout = -1) {
 /// @param radius Radius of imaginary circle
 /// @param degrees Degrees along the imaginary circle to travel
 /// @param timeout Time in milliseconds to stop the turn
-void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1, float scaling = 13) {
+void move_circle_auton(float radius, float degrees, bool turn_left, float timeout = -1, float scaling = 12) {
 	
 	int start_time = millis();
 
