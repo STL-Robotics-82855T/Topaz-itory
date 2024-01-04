@@ -4,12 +4,12 @@
 
 
 // Needs to be declared before movement class
-odometry odom(6.02, 3.25);
+// odometry odom(6.00, 3.265);
+odometry odom(-0.5, 2.3);
+
 
 #include "./movement/movement.h" // Defines movement class
 #include "catapult.h" // The catapult functions
-
-#include "squiggles/squiggles.hpp" // The squiggles library for path planning
 
 // Left offset: 5.8"
 // Right offset: 5.8"
@@ -20,23 +20,39 @@ odometry odom(6.02, 3.25);
 catapult cata;
 
 
-/// @brief Toggles the wing
-/// @param delay_time Delay in ms for the wing to actuate
-void toggle_wing_1() {
+/// @brief Toggles the left wing (facing toward the back of the robot)
+void toggle_wing_left() {
 	wing_state_1 = !wing_state_1;
 	wing_cylinder_1.set_value(wing_state_1);
 }
 
-void toggle_wing_2() {
+/// @brief Toggles the right wing (facing toward the front of the robot)
+void toggle_wing_right() {
 	wing_state_2 = !wing_state_2;
 	wing_cylinder_2.set_value(wing_state_2);
 }
 
-
-void toggle_intake() {
-	intake_state = !intake_state;
-	intake_cylinders.set_value(intake_state);
+void toggle_wings() {
+	wing_global_state = !wing_global_state;
+	wing_cylinder_1.set_value(wing_global_state);
+	wing_cylinder_2.set_value(wing_global_state);
 }
+
+void toggle_blocker() {
+	blocker_state = !blocker_state;
+	blocker_cylinders.set_value(blocker_state);
+}
+
+// void toggle_wing_2() {
+// 	wing_state_2 = !wing_state_2;
+// 	wing_cylinder_2.set_value(wing_state_2);
+// }
+
+
+// void toggle_intake() {
+// 	intake_state = !intake_state;
+// 	intake_cylinders.set_value(intake_state);
+// }
 
 /*
    --- Calculating Speed ---
@@ -100,8 +116,11 @@ void reset_sensors() {
 
 	// horizontal_tracker.reset_position();
 	// right_tracker.reset_position();
-	cata_tracker.reset();
-	cata_tracker.reset_position();
+	// cata_tracker.reset();
+	// cata_tracker.reset_position();
+
+	odom_tracker.reset_position();
+	odom_tracker.reset();
 
 
 	master.print(0, 0, "Calibrating IMU...");
@@ -116,7 +135,8 @@ void initialize() {
 	reset_sensors();
 
 	Task odom_angle_task([] { odom.get_current_angle(); });
-	// Task odom_position_task([] { odom.get_current_position(); });
+	Task odom_position_task([] { odom.get_current_position(); });
+	delay(500);
 
 	cout << "Initialized" << endl;
 }
@@ -130,44 +150,109 @@ void autonomous() {
 
 	cout << "Autonomous started" << endl;
 
+	float target_inches = 12.0;
+
+	int start_time = millis();
+
+	float wheel_distance_per_encoder_rotation = 3.26 * PI * (36.0 / 60.0); // inches per rotation
+
+	// PID constants
+	float P = 1;
+	float I = 0.025;
+	float D = 2.25;
+	float allowed_error = 0.01; // inches of error allowed
+
+
+	float start_left_position = left[1].get_position();
+	float start_right_position = right[0].get_position();
+
+	float current_error_left = target_inches;
+	float previous_error_left = 0;
+	float build_up_error_left = 0;
+	float current_error_right = target_inches;
+	float previous_error_right = 0;
+	float build_up_error_right = 0;
+
+	float power_right;
+
+	cout << "Driving straight for: " << target_inches << endl;
+
+	while (abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 10 || abs(right[0].get_actual_velocity()) > 10) {
+				
+				
+
+		current_error_right = target_inches - sqrt(odom.absolute_position.second*odom.absolute_position.second + odom.absolute_position.first*odom.absolute_position.first);
+		// if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
+		// 	build_up_error_right += current_error_right;
+		// }
+		power_right = (current_error_right * P) + ((current_error_right - previous_error_right) * D);
+		previous_error_right = current_error_right;
+
+		power_right *= 8; // Tune this scaling factor
+
+
+		// power_left = map(power_left, 0, 2, 0, 127);
+		// power_right = map(power_right, 0, 2, 0, 127);
+
+		// cout << "Error: " << current_error_left << " " << current_error_right << endl;
+		// cout << power_left << " " << power_right << endl;
+
+
+
+		// power_left = 127 * abs(power_left) / power_left;
+		// power_right = 127 * abs(power_right) / power_right;
+
+		right.move(power_right);
+		left.move(power_right);
+
+
+		delay(10);
+
+	}
+
+	cout << "Done driving" << endl;
+
+	left.move(0);
+	right.move(0);
+
 
 	// close to net side auton
 
-	intake_motor.move(127); // to keep ball in
+	// intake_motor.move(127); // to keep ball in
 
-	drive_line_auton(5);
-	drive_line_auton(-25);
+	// drive_line_auton(5);
+	// drive_line_auton(-25);
 
-	left.move(-105);
-	right.move(-45);
-	delay(300);
-	toggle_wing_1();
-	delay(300);
-	left.set_brake_modes(E_MOTOR_BRAKE_HOLD);
-	right.set_brake_modes(E_MOTOR_BRAKE_HOLD);
-	left.move(0);
-	right.move(0);
-	left.brake();
-	right.brake();
-	delay(100);
-	left.set_brake_modes(E_MOTOR_BRAKE_COAST);
-	right.set_brake_modes(E_MOTOR_BRAKE_COAST);
+	// left.move(-105);
+	// right.move(-45);
+	// delay(300);
+	// toggle_wing_1();
+	// delay(300);
+	// left.set_brake_modes(E_MOTOR_BRAKE_HOLD);
+	// right.set_brake_modes(E_MOTOR_BRAKE_HOLD);
+	// left.move(0);
+	// right.move(0);
+	// left.brake();
+	// right.brake();
+	// delay(100);
+	// left.set_brake_modes(E_MOTOR_BRAKE_COAST);
+	// right.set_brake_modes(E_MOTOR_BRAKE_COAST);
 
-	drive_line_auton(-4);
-	turn_to_angle_auton(-85, 1000, 3);
-	toggle_wing_1();
-	drive_line_auton(-25,false, 1000);
-	drive_line_auton(10, false, 1000);
-	turn_to_angle_auton(-250, 2000, 1);
-	intake_motor.move(-127);
-	drive_line_auton(20, false, 1000);
-	drive_line_auton(-15);
-	turn_to_angle_auton(100, 1000, 3);
-	intake_motor.move(0);
-	drive_line_auton(20, false, 1000);
-	intake_motor.move(-127);
-	drive_line_auton(-10, false, 1000);
-	intake_motor.move(0);
+	// drive_line_auton(-4);
+	// turn_to_angle_auton(-85, 1000, 3);
+	// toggle_wing_1();
+	// drive_line_auton(-25,false, 1000);
+	// drive_line_auton(10, false, 1000);
+	// turn_to_angle_auton(-250, 2000, 1);
+	// intake_motor.move(-127);
+	// drive_line_auton(20, false, 1000);
+	// drive_line_auton(-15);
+	// turn_to_angle_auton(100, 1000, 3);
+	// intake_motor.move(0);
+	// drive_line_auton(20, false, 1000);
+	// intake_motor.move(-127);
+	// drive_line_auton(-10, false, 1000);
+	// intake_motor.move(0);
 
 
 
@@ -286,10 +371,18 @@ void autonomous() {
 
 void opcontrol() {
 
+	// autonomous();
+
 	Task catapult_monitor([] { cata.start(); });
 
 	int index = 0;
 	bool reverse_drive = false;
+	char is_intake = 0;
+	bool prev_intake_state = false;
+	bool intake_released = false;
+
+	bool motor_overtorque = false;
+	int overtorque_count = 0;
 
 	while (true) {
 
@@ -303,29 +396,72 @@ void opcontrol() {
 			reverse_drive = !reverse_drive;
 		}
 
+
 		int left_power = (reverse_drive ? -1 : 1) * power + turn;
 		int right_power = (reverse_drive ? -1 : 1) * power - turn;
 
 		left.move(left_power);
 		right.move(right_power);
 
+
+
+		if (index == 10) {
+			lcd::print(1, "X: %.2f", odom.absolute_position.first);
+			delay(25);
+			lcd::print(2, "Y: %.2f", odom.absolute_position.second);
+			delay(25);
+
+			index = 0;
+		}
+		index++;
+
 		// Parsa Controls
+
 		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-			intake_motor.move(127);
+			is_intake = 1;
 		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+			motor_overtorque = false;
+			is_intake = 2;
+		} else {
+			is_intake = 0;
+		}
+
+		if (intake_motor.get_power() > 12.0) {
+			if (overtorque_count == 0) {
+				overtorque_count = 1;
+			} else {
+				overtorque_count++;
+			}
+			if (overtorque_count > 20) {
+				motor_overtorque = true;
+			}
+		} 
+
+		if (intake_released) {
+			motor_overtorque = false;
+			overtorque_count = 0;
+		}
+
+		if (is_intake == 1 && !motor_overtorque) {
+			intake_motor.move(127);
+		} else if (is_intake == 2) {
 			intake_motor.move(-127);
 		} else {
 			intake_motor.move(0);
 		}
 
-		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-			toggle_intake();
 
+		// if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+		// 	toggle_intake();
+
+		// }
+
+		if (master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+			toggle_blocker();
 		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
-			toggle_wing_1();
-			toggle_wing_2();
+			toggle_wings();
 		}
 
 
@@ -347,6 +483,17 @@ void opcontrol() {
 		// 	toggle_wing_1();
 		// 	toggle_wing_2();
 		// }
+
+		if (is_intake == 1) {
+			intake_released = false;
+			prev_intake_state = true;
+		} else if (is_intake == 0 && prev_intake_state) {
+			intake_released = true;	
+			prev_intake_state = false;
+		} else {
+			intake_released = false;
+			prev_intake_state = false;
+		}
 
 		delay(5);
 	}

@@ -90,6 +90,7 @@ using std::cout;
 using std::endl;
 
 #define PI 3.14159265358979323846
+#define NOW millis()
 
 #endif
 
