@@ -89,7 +89,7 @@ void toggle_blocker() {
    Assuming 0.5 seconds to reach max acceleration
    17.12 m/s^2 / 0.5 s = 34.24 m/s^3
 
-*/
+ */
 
 const double MAX_VELOCITY = 1.556932505; // m/s
 const double MAX_ACCELERATION = 17.12; // m/s^2
@@ -109,7 +109,7 @@ std::map<int, int> power_curve = {{-127, -127},{-126, -125},{-125, -124},{-124, 
 
 void reset_sensors() {
 	// set posititon of sensors to 0
-	lcd::initialize();
+	// lcd::initialize();
 	left.tare_position();
 	right.tare_position();
 
@@ -130,7 +130,54 @@ void reset_sensors() {
 	imu_sensor1.tare();
 }
 
+static lv_res_t btn_click_action(lv_obj_t * btn) {
+	uint8_t id = lv_obj_get_free_num(btn);
+
+	printf("Button %d is released\n", id);
+
+	/* The button is released.
+	 * Make something here */
+
+	return LV_RES_OK; /*Return OK if the button is not deleted*/
+}
+
 void initialize() {
+	/*Create a title label*/
+	lv_obj_t * label = lv_label_create(lv_scr_act(), NULL);
+	lv_label_set_text(label, "Default buttons");
+	lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+	/*Create a normal button*/
+	lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
+	lv_cont_set_fit(btn1, true, true); /*Enable resizing horizontally and vertically*/
+	lv_obj_align(btn1, label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+	lv_obj_set_free_num(btn1, 1);   /*Set a unique number for the button*/
+	lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
+
+	/*Add a label to the button*/
+	label = lv_label_create(btn1, NULL);
+	lv_label_set_text(label, "Normal");
+
+	/*Copy the button and set toggled state. (The release action is copied too)*/
+	lv_obj_t * btn2 = lv_btn_create(lv_scr_act(), btn1);
+	lv_obj_align(btn2, btn1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+	lv_btn_set_state(btn2, LV_BTN_STATE_TGL_REL);  /*Set toggled state*/
+	lv_obj_set_free_num(btn2, 2);               /*Set a unique number for the button*/
+
+	/*Add a label to the toggled button*/
+	label = lv_label_create(btn2, NULL);
+	lv_label_set_text(label, "Toggled");
+
+	/*Copy the button and set inactive state.*/
+	lv_obj_t * btn3 = lv_btn_create(lv_scr_act(), btn1);
+	lv_obj_align(btn3, btn2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+	lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
+	lv_obj_set_free_num(btn3, 3);               /*Set a unique number for the button*/
+
+	/*Add a label to the inactive button*/
+	label = lv_label_create(btn3, NULL);
+	lv_label_set_text(label, "Inactive");
+
 
 	reset_sensors();
 
@@ -178,8 +225,8 @@ void autonomous() {
 	cout << "Driving straight for: " << target_inches << endl;
 
 	while (abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 10 || abs(right[0].get_actual_velocity()) > 10) {
-				
-				
+
+
 
 		current_error_right = target_inches - sqrt(odom.absolute_position.second*odom.absolute_position.second + odom.absolute_position.first*odom.absolute_position.first);
 		// if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
@@ -263,7 +310,7 @@ void autonomous() {
 
 	// drive_line_auton(-7);
 	// turn_to_angle_auton(180, 1500);
-	
+
 	// drive_line_auton(44);
 	// turn_to_angle_auton(-90, 800);
 	// drive_line_auton(20);
@@ -272,7 +319,7 @@ void autonomous() {
 
 
 	// Far side (shooter) auton
-	
+
 	// intake_motor.move(70); // to keep ball in
 	// toggle_wing_1();
 	// turn_to_angle_auton(-90, 800, 5);
@@ -344,7 +391,7 @@ void autonomous() {
 	// intake_motor.move(127);
 	// drive_line_auton(80);
 
-	
+
 	// turn_to_angle_auton(130, 2000, 3);
 	// drive_line_auton(30);
 	// drive_line_auton(-15);
@@ -391,7 +438,7 @@ void opcontrol() {
 
 		// https://www.desmos.com/calculator/zdyrwup2xa (Graph of the power curve)
 		power = power_curve[power];
-		
+
 		if (master.get_digital(E_CONTROLLER_DIGITAL_LEFT) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
 			reverse_drive = !reverse_drive;
 		}
@@ -406,9 +453,9 @@ void opcontrol() {
 
 
 		if (index == 10) {
-			lcd::print(1, "X: %.2f", odom.absolute_position.first);
+			// lcd::print(1, "X: %.2f", odom.absolute_position.first);
 			delay(25);
-			lcd::print(2, "Y: %.2f", odom.absolute_position.second);
+			// lcd::print(2, "Y: %.2f", odom.absolute_position.second);
 			delay(25);
 
 			index = 0;
