@@ -15,7 +15,7 @@ public:
 			cata_button_held = master.get_digital(E_CONTROLLER_DIGITAL_L2);
 			// FIGURE OUT START ANGLE OF CATAPULT (exact value)
 			if (cata_button_held) {
-				cata_motor.move(127);
+				cata_motor.move(105);
 			}
 			// else {
 			// 	if (cata_angle <= degrees) { // Centidegrees

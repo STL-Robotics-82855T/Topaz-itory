@@ -5,7 +5,7 @@ Controller master(E_CONTROLLER_MASTER);
 // Left side motors
 Motor left_back(11, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS); // Top is stacked on top of bottom
 Motor left_middle(12, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
-Motor left_front(13, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
+Motor left_front(17, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
 
 MotorGroup left({left_middle, left_front, left_back});
 
@@ -45,3 +45,4 @@ Imu imu_sensor1(14);
 Rotation odom_tracker(5, true);
 // Rotation cata_tracker(10, true);
 
+Distance vertical_distance(15);
