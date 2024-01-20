@@ -1,14 +1,15 @@
 #include "main.h"
 #include "devices.h" // Defines motors, controller, sensors and helper functions
-#include "./movement/odometry.h" // Defines odometry class
+#include "lemlib/api.hpp" // LemLib :)
+// #include "./movement/odometry.h" // Defines odometry class
 
 
 // Needs to be declared before movement class
 // odometry odom(6.00, 3.265);
-odometry odom(-0.5, 2.3);
+// odometry odom(-0.5, 2.3);
 
 
-#include "./movement/movement.h" // Defines movement class
+// #include "./movement/movement.h" // Defines movement class
 #include "catapult.h" // The catapult functions
 
 // Left offset: 5.8"
@@ -19,6 +20,47 @@ odometry odom(-0.5, 2.3);
 // Constants
 catapult cata;
 
+lemlib::Drivetrain_t drivetrain {
+	&left,
+	&right,
+	12,
+	3.25,
+	360
+};
+
+lemlib::TrackingWheel tracking_wheel(&odom_tracker, 2.3, -0.5);
+
+lemlib::OdomSensors_t sensors {
+	&tracking_wheel,
+	nullptr,
+	nullptr,
+	nullptr,
+	&imu_sensor1
+};
+
+// forward/backward PID
+lemlib::ChassisController_t lateralController {
+    8, // kP
+    30, // kD
+    1, // smallErrorRange
+    100, // smallErrorTimeout
+    3, // largeErrorRange
+    500, // largeErrorTimeout
+    5 // slew rate
+};
+ 
+// turning PID
+lemlib::ChassisController_t angularController {
+    4, // kP
+    40, // kD
+    1, // smallErrorRange
+    100, // smallErrorTimeout
+    3, // largeErrorRange
+    500, // largeErrorTimeout
+    0 // slew rate
+};
+
+lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensors);
 
 /// @brief Toggles the left wing (facing toward the back of the robot)
 void toggle_wing_left() {
@@ -165,8 +207,7 @@ void initialize() {
 
 	reset_sensors();
 
-	Task odom_angle_task([] { odom.get_current_angle(); });
-	Task odom_position_task([] { odom.get_current_position(); });
+	// Task odom_position_task([] { odom.get_current_position(); });
 	delay(500);
 
 	cout << "Initialized" << endl;
@@ -180,71 +221,6 @@ void competition_initialize() {}
 void autonomous() {
 
 	cout << "Autonomous started" << endl;
-
-	float target_inches = 12.0;
-
-	int start_time = millis();
-
-	float wheel_distance_per_encoder_rotation = 3.26 * PI * (36.0 / 60.0); // inches per rotation
-
-	// PID constants
-	float P = 1;
-	float I = 0.025;
-	float D = 2.25;
-	float allowed_error = 0.01; // inches of error allowed
-
-
-	float start_left_position = left[1].get_position();
-	float start_right_position = right[0].get_position();
-
-	float current_error_left = target_inches;
-	float previous_error_left = 0;
-	float build_up_error_left = 0;
-	float current_error_right = target_inches;
-	float previous_error_right = 0;
-	float build_up_error_right = 0;
-
-	float power_right;
-
-	cout << "Driving straight for: " << target_inches << endl;
-
-	while (abs(current_error_right) > allowed_error || abs(left[1].get_actual_velocity()) > 10 || abs(right[0].get_actual_velocity()) > 10) {
-
-
-
-		current_error_right = target_inches - sqrt(odom.absolute_position.second*odom.absolute_position.second + odom.absolute_position.first*odom.absolute_position.first);
-		// if (abs(current_error_right) < 3) { // If the error is less than 3 inches, start building up the error (avoids windup)
-		// 	build_up_error_right += current_error_right;
-		// }
-		power_right = (current_error_right * P) + ((current_error_right - previous_error_right) * D);
-		previous_error_right = current_error_right;
-
-		power_right *= 8; // Tune this scaling factor
-
-
-		// power_left = map(power_left, 0, 2, 0, 127);
-		// power_right = map(power_right, 0, 2, 0, 127);
-
-		// cout << "Error: " << current_error_left << " " << current_error_right << endl;
-		// cout << power_left << " " << power_right << endl;
-
-
-
-		// power_left = 127 * abs(power_left) / power_left;
-		// power_right = 127 * abs(power_right) / power_right;
-
-		right.move(power_right);
-		left.move(power_right);
-
-
-		delay(10);
-
-	}
-
-	cout << "Done driving" << endl;
-
-	left.move(0);
-	right.move(0);
 
 
 	// close to net side auton
