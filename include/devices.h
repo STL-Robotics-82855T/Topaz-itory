@@ -21,7 +21,7 @@ Motor cata_motor(16, E_MOTOR_GEAR_RED, false, E_MOTOR_ENCODER_ROTATIONS);
 
 
 // Intake motor
-Motor intake_motor(10, E_MOTOR_GEAR_BLUE, false, E_MOTOR_ENCODER_ROTATIONS);
+Motor intake_motor(10, E_MOTOR_GEAR_BLUE, true, E_MOTOR_ENCODER_ROTATIONS);
 
 bool wing_global_state = false; // to ensure both wings are in the same state when driving
 

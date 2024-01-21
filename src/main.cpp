@@ -133,28 +133,29 @@ void toggle_blocker() {
 
  */
 
-void reset_sensors() {
-	// set posititon of sensors to 0
-	// lcd::initialize();
-	left.tare_position();
-	right.tare_position();
+// no longer needed with lemlib
+// void reset_sensors() {
+// 	// set posititon of sensors to 0
+// 	// lcd::initialize();
+// 	left.tare_position();
+// 	right.tare_position();
 
 
-	// horizontal_tracker.reset_position();
-	// right_tracker.reset_position();
-	// cata_tracker.reset();
-	// cata_tracker.reset_position();
+// 	// horizontal_tracker.reset_position();
+// 	// right_tracker.reset_position();
+// 	// cata_tracker.reset();
+// 	// cata_tracker.reset_position();
 
-	odom_tracker.reset_position();
-	odom_tracker.reset();
+// 	odom_tracker.reset_position();
+// 	odom_tracker.reset();
 
 
-	master.print(0, 0, "Calibrating IMU...");
-	imu_sensor1.reset(true);
-	delay(50);
-	master.clear();
-	imu_sensor1.tare();
-}
+// 	master.print(0, 0, "Calibrating IMU...");
+// 	imu_sensor1.reset(true);
+// 	delay(50);
+// 	master.clear();
+// 	imu_sensor1.tare();
+// }
 
 static lv_res_t btn_click_action(lv_obj_t * btn) {
 	uint8_t id = lv_obj_get_free_num(btn);
@@ -167,51 +168,69 @@ static lv_res_t btn_click_action(lv_obj_t * btn) {
 	return LV_RES_OK; /*Return OK if the button is not deleted*/
 }
 
-void initialize() {
+void auton_selector() {
 	/*Create a title label*/
-	lv_obj_t * label = lv_label_create(lv_scr_act(), NULL);
-	lv_label_set_text(label, "Default buttons");
-	lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+    lv_obj_t* label = lv_label_create(lv_scr_act(), NULL);
+    lv_label_set_text(label, "Default buttons");
+    lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
 
-	/*Create a normal button*/
-	lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
-	lv_cont_set_fit(btn1, true, true); /*Enable resizing horizontally and vertically*/
-	lv_obj_align(btn1, label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-	lv_obj_set_free_num(btn1, 1);   /*Set a unique number for the button*/
-	lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
+    /*Create a normal button*/
+    lv_obj_t* btn1 = lv_btn_create(lv_scr_act(), NULL);
+    lv_cont_set_fit(btn1, true, true); /*Enable resizing horizontally and vertically*/
+    lv_obj_align(btn1, label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_set_free_num(btn1, 1);   /*Set a unique number for the button*/
+    lv_btn_set_action(btn1, LV_BTN_ACTION_CLICK, btn_click_action);
 
-	/*Add a label to the button*/
-	label = lv_label_create(btn1, NULL);
-	lv_label_set_text(label, "Normal");
+    /*Add a label to the button*/
+    label = lv_label_create(btn1, NULL);
+    lv_label_set_text(label, "Normal");
 
-	/*Copy the button and set toggled state. (The release action is copied too)*/
-	lv_obj_t * btn2 = lv_btn_create(lv_scr_act(), btn1);
-	lv_obj_align(btn2, btn1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-	lv_btn_set_state(btn2, LV_BTN_STATE_TGL_REL);  /*Set toggled state*/
-	lv_obj_set_free_num(btn2, 2);               /*Set a unique number for the button*/
+    /*Copy the button and set toggled state. (The release action is copied too)*/
+    lv_obj_t* btn2 = lv_btn_create(lv_scr_act(), btn1);
+    lv_obj_align(btn2, btn1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_btn_set_state(btn2, LV_BTN_STATE_TGL_REL);  /*Set toggled state*/
+    lv_obj_set_free_num(btn2, 2);               /*Set a unique number for the button*/
 
-	/*Add a label to the toggled button*/
-	label = lv_label_create(btn2, NULL);
-	lv_label_set_text(label, "Toggled");
+    /*Add a label to the toggled button*/
+    label = lv_label_create(btn2, NULL);
+    lv_label_set_text(label, "Toggled");
 
-	/*Copy the button and set inactive state.*/
-	lv_obj_t * btn3 = lv_btn_create(lv_scr_act(), btn1);
-	lv_obj_align(btn3, btn2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-	lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
-	lv_obj_set_free_num(btn3, 3);               /*Set a unique number for the button*/
+    /*Copy the button and set inactive state.*/
+    lv_obj_t* btn3 = lv_btn_create(lv_scr_act(), btn1);
+    lv_obj_align(btn3, btn2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_btn_set_state(btn3, LV_BTN_STATE_INA);   /*Set inactive state*/
+    lv_obj_set_free_num(btn3, 3);               /*Set a unique number for the button*/
 
-	/*Add a label to the inactive button*/
-	label = lv_label_create(btn3, NULL);
-	lv_label_set_text(label, "Inactive");
+    /*Add a label to the inactive button*/
+    label = lv_label_create(btn3, NULL);
+    lv_label_set_text(label, "Inactive");
+}
 
+void update_screen() {
+    // loop forever
+    while (true) {
+        lemlib::Pose pose = chassis.getPose(); // get the current position of the robot
+        pros::lcd::print(0, "x: %f", pose.x); // print the x position
+        pros::lcd::print(1, "y: %f", pose.y); // print the y position
+        pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
+        pros::delay(10);
+    }
+}
 
-	reset_sensors();
+void initialize() {
+    // auton_selector();
+
+	lcd::initialize();
+	chassis.calibrate();
+	Task screenTask(update_screen);
+	chassis.setPose(0, 0, 0);
 
 	// Task odom_position_task([] { odom.get_current_position(); });
-	delay(500);
 
 	cout << "Initialized" << endl;
 }
+
+
 
 
 void disabled() {}
@@ -221,152 +240,6 @@ void competition_initialize() {}
 void autonomous() {
 
 	cout << "Autonomous started" << endl;
-
-
-	// close to net side auton
-
-	// intake_motor.move(127); // to keep ball in
-
-	// drive_line_auton(5);
-	// drive_line_auton(-25);
-
-	// left.move(-105);
-	// right.move(-45);
-	// delay(300);
-	// toggle_wing_1();
-	// delay(300);
-	// left.set_brake_modes(E_MOTOR_BRAKE_HOLD);
-	// right.set_brake_modes(E_MOTOR_BRAKE_HOLD);
-	// left.move(0);
-	// right.move(0);
-	// left.brake();
-	// right.brake();
-	// delay(100);
-	// left.set_brake_modes(E_MOTOR_BRAKE_COAST);
-	// right.set_brake_modes(E_MOTOR_BRAKE_COAST);
-
-	// drive_line_auton(-4);
-	// turn_to_angle_auton(-85, 1000, 3);
-	// toggle_wing_1();
-	// drive_line_auton(-25,false, 1000);
-	// drive_line_auton(10, false, 1000);
-	// turn_to_angle_auton(-250, 2000, 1);
-	// intake_motor.move(-127);
-	// drive_line_auton(20, false, 1000);
-	// drive_line_auton(-15);
-	// turn_to_angle_auton(100, 1000, 3);
-	// intake_motor.move(0);
-	// drive_line_auton(20, false, 1000);
-	// intake_motor.move(-127);
-	// drive_line_auton(-10, false, 1000);
-	// intake_motor.move(0);
-
-
-
-	// turn_to_angle_auton(90, 800);
-	// intake_motor.move(-127);
-	// drive_line_auton(6);
-	// intake_motor.move(0);
-
-	// drive_line_auton(-7);
-	// turn_to_angle_auton(180, 1500);
-
-	// drive_line_auton(44);
-	// turn_to_angle_auton(-90, 800);
-	// drive_line_auton(20);
-	// toggle_wing_2();
-	// wing_state_1 = !wing_state_1; // to prevent see-saw
-
-
-	// Far side (shooter) auton
-
-	// intake_motor.move(70); // to keep ball in
-	// toggle_wing_1();
-	// turn_to_angle_auton(-90, 800, 5);
-	// toggle_wing_1();
-	// drive_line_auton(10);
-	// turn_to_angle_auton(45, 800, 4);
-	// drive_line_auton(5);
-	// intake_motor.move(-127);
-	// drive_line_auton(8);
-	// drive_line_auton(-10);
-	// turn_to_angle_auton(225, 2500, 5);
-	// intake_motor.move(0);
-	// drive_line_auton(-10);
-	// drive_line_auton(15);
-
-	// backup far side (point toward net and drive straight)
-	// intake_motor.move(70); // to keep ball in
-	// drive_line_auton(25);
-	// intake_motor.move(-127);
-	// delay(500);
-	// intake_motor.move(0);
-	// drive_line_auton(-10);
-	// drive_line_auton(30);
-
-
-
-	// Skills auton
-	// turn_to_angle_auton(-35, 500, 2);
-	// toggle_intake();
-	// left.move(6);
-	// right.move(5);
-	// int cata_launches = 0;
-	// bool has_counted = false;
-	// while (true) {
-	// 	cata_motor.move(110);
-	// 	if (cata_tracker.get_position() < 2000) {
-	// 		if (!has_counted) {
-	// 			cata_launches++; 
-	// 			has_counted = true;
-	// 		}
-	// 	} else if (cata_tracker.get_position() > 3000) {
-	// 		has_counted = false;
-	// 	}
-	// 	if (cata_launches == 48) {
-	// 		break;
-	// 	}
-	// 	master.print(0, 0, "Cata launches: %d", cata_launches-1);
-	// 	delay(50);
-
-	// 	if (odom.current_angle_deg > -18) {
-	// 		right.move(12);
-	// 		left.move(5);
-	// 	} else if (odom.current_angle_deg < -22) {
-	// 		right.move(5);
-	// 		left.move(12);
-	// 	}
-	// }
-	// cata_motor.move(0);
-	// left.move(0);
-	// right.move(0);
-	// turn_to_angle_auton(0, 15, 2);
-	// drive_line_auton(-5);
-	// turn_to_angle_auton(195, 3000, 3);
-
-	// cata_motor.move(127);
-	// delay(250);
-	// cata_motor.move(0);
-	// toggle_intake();
-	// intake_motor.move(127);
-	// drive_line_auton(80);
-
-
-	// turn_to_angle_auton(130, 2000, 3);
-	// drive_line_auton(30);
-	// drive_line_auton(-15);
-	// turn_to_angle_auton(60);
-	// drive_line_auton(50);
-	// turn_to_angle_auton(180);
-	// toggle_wing_1();
-	// toggle_wing_2();
-	// intake_motor.move(-127);
-	// drive_line_auton(30);
-	// drive_line_auton(-15);
-	// drive_line_auton(20);
-	// intake_motor.move(0);
-
-
 
 
 
