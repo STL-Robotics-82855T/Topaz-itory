@@ -20,17 +20,18 @@
 // Constants
 catapult cata;
 
-lemlib::Drivetrain_t drivetrain {
+lemlib::Drivetrain drivetrain {
 	&left,
 	&right,
 	12,
-	3.25,
-	360
+	lemlib::Omniwheel::NEW_325,
+	360,
+	8
 };
 
 lemlib::TrackingWheel tracking_wheel(&odom_tracker, 2.3, -0.5);
 
-lemlib::OdomSensors_t sensors {
+lemlib::OdomSensors sensors {
 	&tracking_wheel,
 	nullptr,
 	nullptr,
@@ -39,20 +40,24 @@ lemlib::OdomSensors_t sensors {
 };
 
 // forward/backward PID
-lemlib::ChassisController_t lateralController {
-    8, // kP
-    30, // kD
+lemlib::ControllerSettings lateralController {
+    10, // kP
+	0, // kI
+    25, // kD
+	0, // windupRange
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
     500, // largeErrorTimeout
-    5 // slew rate
+    10 // slew rate
 };
  
 // turning PID
-lemlib::ChassisController_t angularController {
-    4, // kP
+lemlib::ControllerSettings angularController {
+    5, // kP
+	0, // kI
     40, // kD
+	10, // windupRange
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
@@ -223,7 +228,9 @@ void initialize() {
 	lcd::initialize();
 	chassis.calibrate();
 	Task screenTask(update_screen);
-	chassis.setPose(0, 0, 0);
+	// chassis.setPose(35.307, -58.859, 0);
+	chassis.setPose(-35.582, -58.283, 0);
+
 
 	// Task odom_position_task([] { odom.get_current_position(); });
 
@@ -237,10 +244,38 @@ void disabled() {}
 
 void competition_initialize() {}
 
+
+ASSET(path_txt);
+
 void autonomous() {
 
 	cout << "Autonomous started" << endl;
 
+	intake_motor.move(-127);
+	chassis.follow(path_txt, 4, 2500);
+	delay(1000);
+	intake_motor.move(127);
+	delay(1000);
+	chassis.moveToPoint(-35.582, -58.283, 2000, false);
+	delay(500);
+	intake_motor.move(0);
+	// cata_motor.move(127);
+	// delay(700);
+	// cata_motor.move(0);
+
+	// chassis.turnTo(50,0, 1000);
+	// chassis.moveToPoint(-23.8, -7.6, 1000, 90);
+	// delay(500);
+	// intake_motor.move(127);
+	// delay(500);
+	// intake_motor.move(0);
+	// // chassis.moveToPoint(-24.389, -18, 270, 1000, 127, false);
+	// cata_motor.move(127);
+	// delay(1500);
+	// cata_motor.move(0);
+
+	// chassis.turnTo(0,0,1000);
+	// chassis.moveTo(0,0,1000);
 
 
 	cout << "Autonomous ended" << endl;
