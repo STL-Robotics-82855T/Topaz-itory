@@ -26,7 +26,7 @@ lemlib::Drivetrain drivetrain {
 	12,
 	lemlib::Omniwheel::NEW_325,
 	360,
-	8
+	8 // Tune this value (8 is for w/ traction wheels, 2 for without traction wheels)
 };
 
 lemlib::TrackingWheel tracking_wheel(&odom_tracker, 2.3, -0.5);
@@ -289,8 +289,7 @@ void opcontrol() {
 	// autonomous();
 
 	Task catapult_monitor([] { cata.start(); });
-
-	int index = 0;
+	
 	bool reverse_drive = false;
 	char is_intake = 0;
 	bool prev_intake_state = false;
@@ -311,24 +310,18 @@ void opcontrol() {
 			reverse_drive = !reverse_drive;
 		}
 
+		// int left_power = (reverse_drive ? -1 : 1) * power + turn;
+		// int right_power = (reverse_drive ? -1 : 1) * power - turn;
 
-		int left_power = (reverse_drive ? -1 : 1) * power + turn;
-		int right_power = (reverse_drive ? -1 : 1) * power - turn;
+		chassis.arcade(power*(reverse_drive ? -1 : 1), turn, 3.0);
 
-		left.move(left_power);
-		right.move(right_power);
+		// chassis.curvature(power*(reverse_drive ? -1 : 1), turn); // Curvature drive if want to test
 
 
 
-		if (index == 10) {
-			// lcd::print(1, "X: %.2f", odom.absolute_position.first);
-			delay(25);
-			// lcd::print(2, "Y: %.2f", odom.absolute_position.second);
-			delay(25);
+		// left.move(left_power);
+		// right.move(right_power);
 
-			index = 0;
-		}
-		index++;
 
 		// Parsa Controls
 
