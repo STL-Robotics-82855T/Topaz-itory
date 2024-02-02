@@ -24,7 +24,7 @@ lemlib::Drivetrain drivetrain {
 	&left,
 	&right,
 	12,
-	lemlib::Omniwheel::NEW_325,
+	2.3,
 	360,
 	8 // Tune this value (8 is for w/ traction wheels, 2 for without traction wheels)
 };
@@ -41,15 +41,15 @@ lemlib::OdomSensors sensors {
 
 // forward/backward PID
 lemlib::ControllerSettings lateralController {
-    10, // kP
+    21, // kP
 	0, // kI
-    25, // kD
+    50, // kD
 	0, // windupRange
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
     500, // largeErrorTimeout
-    10 // slew rate
+    16 // slew rate
 };
  
 // turning PID
@@ -88,6 +88,16 @@ void toggle_wings() {
 void toggle_blocker() {
 	blocker_state = !blocker_state;
 	blocker_cylinders.set_value(blocker_state);
+}
+
+void toggle_passive_hang() {
+	hang_state = !hang_state;
+	hang_cylinder.set_value(hang_state);
+}
+
+void toggle_side_hang() {
+	side_hang_state = !side_hang_state;
+	side_hang_cylinder.set_value(side_hang_state);
 }
 
 // void toggle_wing_2() {
@@ -229,7 +239,7 @@ void initialize() {
 	chassis.calibrate();
 	Task screenTask(update_screen);
 	// chassis.setPose(35.307, -58.859, 0);
-	chassis.setPose(-35.582, -58.283, 0);
+	// chassis.setPose(-35.582, -58.283, 0);
 
 
 	// Task odom_position_task([] { odom.get_current_position(); });
@@ -245,38 +255,191 @@ void disabled() {}
 void competition_initialize() {}
 
 
-ASSET(path_txt);
 
 void autonomous() {
 
 	cout << "Autonomous started" << endl;
 
-	intake_motor.move(-127);
-	chassis.follow(path_txt, 4, 2500);
-	delay(1000);
-	intake_motor.move(127);
-	delay(1000);
-	chassis.moveToPoint(-35.582, -58.283, 2000, false);
-	delay(500);
-	intake_motor.move(0);
-	// cata_motor.move(127);
-	// delay(700);
-	// cata_motor.move(0);
 
-	// chassis.turnTo(50,0, 1000);
-	// chassis.moveToPoint(-23.8, -7.6, 1000, 90);
+	// Shooter side safe AWP (quals)
+	// chassis.setPose(-47.124, -57.259, -45);
+	// intake_motor.move(-127);
+	// chassis.moveToPoint(-51.5, -52.3, 1000, true, 50);
+	// delay(1000);
+	// intake_motor.move(0);
+	// chassis.waitUntilDone();
+	// toggle_wing_left();
+	// chassis.moveToPose(-33, -59, -90, 1500, {.forwards=false, .maxSpeed=90});
+	// chassis.waitUntil(10);
+	// toggle_wing_left();
+	// // chassis.turnTo(0, -57, 1000, false);
+	// chassis.moveToPoint(-8.3, -57, 2000, false, 127);
+	// chassis.moveToPoint(-38, -58, 25000, true, 127);
+	// chassis.turnTo(0, -57, 1000);
+	// intake_motor.move(-127);
+	// chassis.moveToPoint(-8.3, -57, 2000);
+	// delay(2000);
+	// intake_motor.move(0);
+	// END Shooter side safe AWP (quals)
+
+	// Shooter side auton steal (elim)
+	// chassis.setPose(-36, -54, 0);
+	// toggle_wing_right();
+	// intake_motor.move(-127);
+	// chassis.moveToPoint(-25.5, -7.5, 2000, true, 127);
+	// delay(250);
+	// toggle_wing_right();
+	// delay(750);
+	// intake_motor.move(0);
+	// chassis.waitUntil(25);
+	// intake_motor.move(127);
+	// chassis.waitUntilDone();
+	// delay(250);
+	// chassis.moveToPoint(-48, -52, 2500, false);
+	// chassis.waitUntil(90);
+	// toggle_wing_left();
+	// chassis.turnTo(90, -60, 1000, false, 90);
+	// chassis.waitUntilDone();
+	// toggle_wing_left();
+	// chassis.moveToPoint(-8.5, -57, 2000, false, 127);
+	// chassis.moveToPoint(-38, -58, 25000, true, 127);
+	// chassis.turnTo(0, -57, 1000); // Adjust this on actual field (pull out ball)
+	// chassis.moveToPoint(-8.5, -57, 2000);
+	// chassis.waitUntilDone();
+	// intake_motor.move(-127);
+	// delay(1000);
+	// intake_motor.move(0);
+	// chassis.moveToPoint(-50, -57, 3000, false);
+	// END Shooter side auton steal (elim)
+
+
+	// Push side AWP (quals)
+	// chassis.setPose(14.8, -58.4, -90);
+	// intake_motor.move(-127);
 	// delay(500);
 	// intake_motor.move(127);
+	// chassis.moveToPoint(7, -58.4, 1000);
+	// chassis.waitUntilDone();
+	// delay(250);
+	// chassis.moveToPoint(38.3, -58.4, 1300, false);
+	// toggle_wing_left();
+	// chassis.moveToPose(60, -37.7, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.4});
+	// delay(600);
+	// toggle_wing_right();
+	// chassis.waitUntilDone();
+	// chassis.turnTo(58, 0, 700, false);
+	// toggle_wing_left();
+	// chassis.moveToPoint(58, -32.6, 1500, false);
+	// chassis.waitUntilDone();
+	// toggle_wing_right();
+	// chassis.moveToPoint(58, -40, 1500);
+	// chassis.turnTo(58, 0, 700);
+	// chassis.waitUntilDone();
+	// intake_motor.move(-127);
+	// chassis.moveToPoint(58, -32.6, 1500);
+	// chassis.waitUntilDone();
+	// intake_motor.move(0);
+	// chassis.moveToPoint(45.1, -41.7, 1200, false);
+	// // chassis.turnTo(12.75, -27.75, 1000);
+	// chassis.moveToPoint(12.75, -27.75, 2000);
+	// delay(100);
+	// intake_motor.move(127);
+	// chassis.waitUntilDone();
+	// delay(250);
+	// intake_motor.move(0);
+	// chassis.moveToPose(40, -13.6, 90, 2000, {.chasePower=15, .lead=0.4});
+	// chassis.waitUntilDone();
+	// intake_motor.move(-127);
+	// delay(250);
+	// intake_motor.move(0);
+	// chassis.moveToPose(10, -36.68, 45, 3000, {.forwards=false, .chasePower=15, .lead=0.4});
+	// chassis.waitUntilDone();
+	// toggle_blocker();
+	// END Push side AWP (quals)
+
+	// Push side 6 ball (elims) (risky)
+	// chassis.setPose(34.91, -56.56, 0);
+	// intake_motor.move(-127);
+	// chassis.moveToPose(34.835, -42.852, 0, 500, {.chasePower=15, .minSpeed=120}); // Get out of way of bar
+	// chassis.moveToPose(23.645, -6.963, 0, 1600, {.chasePower=15, .lead=0.2, .minSpeed=120}); // Go toward middle ball
 	// delay(500);
 	// intake_motor.move(0);
-	// // chassis.moveToPoint(-24.389, -18, 270, 1000, 127, false);
-	// cata_motor.move(127);
-	// delay(1500);
-	// cata_motor.move(0);
+	// chassis.waitUntil(40);
+	// intake_motor.move(127);
+	// chassis.waitUntilDone();
+	// chassis.moveToPose(34.918, -55, 60, 2000, {.forwards=false, .chasePower=7, .lead=0.3, .minSpeed=120}); // Move back to start
+	// chassis.waitUntil(85);
+	// intake_motor.move(-127);
+	// delay(350);
+	// intake_motor.move(0);
+	// chassis.moveToPose(6.531, -59.514, -90, 1200, {.chasePower=10, .lead=0.4, .minSpeed=120}); // Grab ball under bar
+	// delay(250);
+	// intake_motor.move(127);
+	// chassis.moveToPose(38.3, -58.4, 90, 1300, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move back to start-ish
+	// delay(400);
+	// toggle_wing_left();
+	// chassis.waitUntilDone();
+	// intake_motor.move(0);
+	// chassis.moveToPose(58, -37.7, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=90}); // Descore matchload
+	// chassis.waitUntilDone();
+	// toggle_wing_left();
+	// chassis.moveToPose(58, -32.6, 180, 1500, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move to goal
+	// chassis.moveToPose(58, -40, 180, 500, {.chasePower=15, .lead=0.2, .minSpeed=120}); // Move away from goal to allow turning
+	// chassis.turnTo(58, 0, 750); // Turn to face goal
+	// intake_motor.move(-127);
+	// chassis.moveToPose(58, -32.6, 0, 1500, {.chasePower=15, .lead=0.4, .minSpeed=120}); // Push into goal
+	// chassis.waitUntilDone();
+	// intake_motor.move(0); // temp
 
-	// chassis.turnTo(0,0,1000);
-	// chassis.moveTo(0,0,1000);
+	// END Push side 6 ball (elims) (risky)
 
+	// Push side 6 ball (elims) (safe)
+	chassis.setPose(35.1, -53.841, 0);
+	intake_motor.move(-127);
+	chassis.moveToPose(35.1, -42.852, 0, 500, {.chasePower=15, .minSpeed=120}); // Get out of way of bar
+	chassis.waitUntilDone();
+	intake_motor.move(0);
+	chassis.moveToPose(11.575, -3.536, -55, 1500, {.chasePower=15, .lead=0.2}); // Go toward middle ball
+	chassis.waitUntil(40);
+	intake_motor.move(127);
+	chassis.turnTo(50, -3.536, 1000);
+	chassis.waitUntilDone();
+	intake_motor.move(0);
+	chassis.moveToPose(40.286, -3.321, 90, 1700, {.chasePower=15}); // Score 2 in net (Not ramming into the net, adjust on the actual field)
+	chassis.waitUntil(70);
+	intake_motor.move(-127);
+	// chassis.moveToPose(44.576, -3.321, 90, 1700, {.chasePower=15, .minSpeed=120}); // Score 2 in net (Not ramming into the net, adjust on the actual field) (For actual ramming)
+	chassis.moveToPose(31.654, -3.321, -90, 1700, {.forwards=false}); // Back up from net
+	delay(500);
+	intake_motor.move(0);
+	chassis.waitUntilDone();
+	chassis.turnTo(11, -19.445, 500);
+	chassis.waitUntilDone();
+	intake_motor.move(127);
+	chassis.moveToPose(11, -19.445, -120, 1500); // Grab third triball (safe one)
+	chassis.turnTo(29.849, -35.462, 1200);
+	chassis.moveToPose(29.849, -35.462, 130, 2000, {.chasePower=9, .lead=0.6, .minSpeed=120}); // Move back
+	chassis.waitUntil(110);
+	intake_motor.move(-127);
+	chassis.waitUntilDone();
+	chassis.moveToPose(33.612, -54.573, -90, 1500, {.chasePower=10, .lead=0.6, .minSpeed=100});
+	chassis.waitUntilDone();
+	intake_motor.move(0);
+	chassis.moveToPose(8.0, -54.681, -90, 1500, {.chasePower=10, .lead=0.4}); // , .minSpeed=100
+	delay(500);
+	intake_motor.move(127);
+	chassis.moveToPose(38.3, -54.681, 90, 1300, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move back to start-ish
+	delay(400);
+	toggle_wing_left();
+	chassis.waitUntilDone();
+	intake_motor.move(0);
+	chassis.moveToPose(56, -37.7, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.5, .minSpeed=90}); // Descore matchload
+	chassis.waitUntilDone();
+	toggle_wing_left();
+
+	// PID test code
+	// chassis.setPose(0,0,0);
+	// chassis.moveToPose(0, 10, 0, 5000);
 
 	cout << "Autonomous ended" << endl;
 
@@ -285,6 +448,11 @@ void autonomous() {
 
 
 void opcontrol() {
+
+	// If blocker is up, put it down
+	if (blocker_state) {
+		toggle_blocker();
+	}
 
 	// autonomous();
 
@@ -306,7 +474,7 @@ void opcontrol() {
 		// https://www.desmos.com/calculator/zdyrwup2xa (Graph of the power curve)
 		// power = power_curve[power]; // Temp disable power curve cause of some turning issues
 
-		if (master.get_digital(E_CONTROLLER_DIGITAL_LEFT) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)) {
 			reverse_drive = !reverse_drive;
 		}
 
@@ -322,50 +490,28 @@ void opcontrol() {
 		// left.move(left_power);
 		// right.move(right_power);
 
-
 		// Parsa Controls
 
 		if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-			is_intake = 1;
-		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-			motor_overtorque = false;
-			is_intake = 2;
-		} else {
-			is_intake = 0;
-		}
-
-		if (intake_motor.get_power() > 12.0) {
-			if (overtorque_count == 0) {
-				overtorque_count = 1;
-			} else {
-				overtorque_count++;
-			}
-			if (overtorque_count > 20) {
-				motor_overtorque = true;
-			}
-		} 
-
-		if (intake_released) {
-			motor_overtorque = false;
-			overtorque_count = 0;
-		}
-
-		if (is_intake == 1 && !motor_overtorque) {
 			intake_motor.move(127);
-		} else if (is_intake == 2) {
+		} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
 			intake_motor.move(-127);
 		} else {
 			intake_motor.move(0);
 		}
 
-
-		// if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-		// 	toggle_intake();
-
-		// }
-
-		if (master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
 			toggle_blocker();
+		}
+
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+			blocker_state = true;
+			blocker_cylinders.set_value(blocker_state);
+			toggle_passive_hang();
+		}
+
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT)) {
+			toggle_side_hang();
 		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {

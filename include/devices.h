@@ -34,9 +34,13 @@ ADIDigitalOut wing_cylinder_2('b', wing_state_2);
 
 
 bool blocker_state = false;
-ADIDigitalOut blocker_cylinders('h', blocker_state);
+ADIDigitalOut blocker_cylinders('d', blocker_state);
 
+bool hang_state = false;
+ADIDigitalOut hang_cylinder('c', hang_state);
 
+bool side_hang_state = false;
+ADIDigitalOut side_hang_cylinder('e', side_hang_state);
 
 Imu imu_sensor1(14);
 // Imu imu_sensor2(18); // Traded to Y Team for pneumatics
@@ -46,4 +50,5 @@ Rotation odom_tracker(5, true);
 // Rotation cata_tracker(10, true);
 
 Distance vertical_distance(15);
+
 
