@@ -394,48 +394,63 @@ void autonomous() {
 	// END Push side 6 ball (elims) (risky)
 
 	// Push side 6 ball (elims) (safe)
-	chassis.setPose(35.1, -53.841, 0);
+	chassis.setPose(33.5, -53.841, 0);
 	intake_motor.move(-127);
-	chassis.moveToPose(35.1, -42.852, 0, 500, {.chasePower=15, .minSpeed=120}); // Get out of way of bar
+	chassis.moveToPose(33.5, -42.852, 0, 500, {.chasePower=15, .minSpeed=120}); // Get out of way of bar
 	chassis.waitUntilDone();
 	intake_motor.move(0);
-	chassis.moveToPose(11.575, -3.536, -55, 1500, {.chasePower=15, .lead=0.2}); // Go toward middle ball
+	chassis.moveToPose(9.855, -4.611, -60, 1500, {.chasePower=12, .lead=0.35}); // Go toward middle ball
 	chassis.waitUntil(40);
 	intake_motor.move(127);
-	chassis.turnTo(50, -3.536, 1000);
+	chassis.turnTo(50, -4.611, 590); // Point to net
 	chassis.waitUntilDone();
 	intake_motor.move(0);
-	chassis.moveToPose(40.286, -3.321, 90, 1700, {.chasePower=15}); // Score 2 in net (Not ramming into the net, adjust on the actual field)
-	chassis.waitUntil(70);
+	chassis.moveToPose(41.286, -4.611, 90, 1200, {.chasePower=15}); // Score 2 in net (Not ramming into the net, adjust on the actual field)
+	delay(300);
 	intake_motor.move(-127);
+	// TEMP
+	// chassis.tank(-127, -127);
+	delay(250);
+	//
 	// chassis.moveToPose(44.576, -3.321, 90, 1700, {.chasePower=15, .minSpeed=120}); // Score 2 in net (Not ramming into the net, adjust on the actual field) (For actual ramming)
-	chassis.moveToPose(31.654, -3.321, -90, 1700, {.forwards=false}); // Back up from net
-	delay(500);
-	intake_motor.move(0);
-	chassis.waitUntilDone();
-	chassis.turnTo(11, -19.445, 500);
-	chassis.waitUntilDone();
+	chassis.moveToPose(31.654, -4.611, -120, 1200, {.forwards=false, .minSpeed=50}); // Back up from net
+	// chassis.waitUntilDone();
+	// chassis.turnTo(11, -20, 500);
+	// chassis.waitUntilDone();
+	delay(300);
 	intake_motor.move(127);
-	chassis.moveToPose(11, -19.445, -120, 1500); // Grab third triball (safe one)
-	chassis.turnTo(29.849, -35.462, 1200);
-	chassis.moveToPose(29.849, -35.462, 130, 2000, {.chasePower=9, .lead=0.6, .minSpeed=120}); // Move back
-	chassis.waitUntil(110);
+	chassis.moveToPose(11, -19.445, -120, 1350); // Grab third triball (safe one)
+	// chassis.turnTo(29.849, -35.462, 1200);
+	// TEMP
+	chassis.waitUntilDone();
+	chassis.moveToPose(35, -15.253, -100, 1200, {.forwards=false, .minSpeed=50}); // Back up from third triball
+	// chassis.moveToPose(29.849, -35.462, 130, 1700, {.chasePower=9, .lead=0.5, .minSpeed=120}); // Move back to alley ish
+	chassis.moveToPose(35, -51.573, 180, 1500, {.chasePower=10, .lead=0.6, .minSpeed=100});
+	chassis.waitUntilDone();
+	intake_motor.move(0);
+	chassis.turnTo(60, -51.573, 450);
+	delay(200);
 	intake_motor.move(-127);
-	chassis.waitUntilDone();
-	chassis.moveToPose(33.612, -54.573, -90, 1500, {.chasePower=10, .lead=0.6, .minSpeed=100});
+	chassis.turnTo(0, -51.573, 450);
 	chassis.waitUntilDone();
 	intake_motor.move(0);
-	chassis.moveToPose(8.0, -54.681, -90, 1500, {.chasePower=10, .lead=0.4}); // , .minSpeed=100
+	chassis.moveToPose(8.0, -51.681, -90, 1500, {.chasePower=10, .lead=0.4}); // , .minSpeed=100
 	delay(500);
 	intake_motor.move(127);
-	chassis.moveToPose(38.3, -54.681, 90, 1300, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move back to start-ish
+	chassis.moveToPose(38.3, -51.681, 90, 1300, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move back to start-ish
 	delay(400);
 	toggle_wing_left();
 	chassis.waitUntilDone();
 	intake_motor.move(0);
-	chassis.moveToPose(56, -37.7, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.5, .minSpeed=90}); // Descore matchload
+	chassis.moveToPose(59, -32.7, -180, 2000, {.forwards=false, .chasePower=13, .lead=0.4, .minSpeed=70}); // Descore matchload
 	chassis.waitUntilDone();
 	toggle_wing_left();
+	chassis.moveToPose(59, -30, 180, 1500, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // Move to goal
+	chassis.moveToPose(59, -38, 180, 500, {.chasePower=15, .lead=0.2, .minSpeed=120}); // Move away from goal to allow turning
+	chassis.turnTo(59, 0, 750); // Turn to face goal
+	chassis.waitUntilDone();
+	intake_motor.move(-127);
+	chassis.moveToPose(59, -30, 0, 1500, {.chasePower=15, .lead=0.4, .minSpeed=120}); // Push into goal
 
 	// PID test code
 	// chassis.setPose(0,0,0);
