@@ -39,7 +39,7 @@ ADIDigitalOut blocker_cylinders('d', blocker_state);
 bool hang_state = false;
 ADIDigitalOut hang_cylinder('c', hang_state);
 
-bool side_hang_state = false;
+bool side_hang_state = true;
 ADIDigitalOut side_hang_cylinder('e', side_hang_state);
 
 Imu imu_sensor1(14);
