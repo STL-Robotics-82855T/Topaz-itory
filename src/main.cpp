@@ -85,20 +85,22 @@ void toggle_wings() {
 	wing_cylinder_2.set_value(wing_global_state);
 }
 
-void toggle_blocker() {
-	blocker_state = !blocker_state;
-	blocker_cylinders.set_value(blocker_state);
+// void toggle_blocker() {
+// 	blocker_state = !blocker_state;
+// 	blocker_cylinders.set_value(blocker_state);
+// }
+
+void toggle_back_wing() {
+	back_wing_state = !back_wing_state;
+	back_wing_cylinder.set_value(back_wing_state);
 }
 
-void toggle_side_hang() {
-	side_hang_state = !side_hang_state;
-	side_hang_cylinder.set_value(side_hang_state);
-}
+
 
 void toggle_passive_hang() {
 	hang_state = !hang_state;
 	hang_cylinder.set_value(hang_state);
-	toggle_side_hang();
+	// toggle_side_hang();
 }
 
 
@@ -264,23 +266,23 @@ void autonomous() {
 
 
 	// Shooter side safe AWP (quals)
-	// chassis.setPose(-47.124, -57.259, -45);
+	// chassis.setPose(-47.124, -57.259, 135);
 	// intake_motor.move(-127);
-	// chassis.moveToPoint(-51.5, -52.3, 1000, true, 50);
+	// // chassis.moveToPoint(-51.5, -52.3, 1000, true, 50);
+	// chassis.moveToPoint(-54.352, -50.152, 1000, false, 50);
 	// delay(1000);
 	// intake_motor.move(0);
 	// chassis.waitUntilDone();
-	// toggle_wing_left();
-	// chassis.moveToPose(-33, -59, -90, 1500, {.forwards=false, .maxSpeed=90});
-	// chassis.waitUntil(10);
-	// toggle_wing_left();
+	// toggle_wing_right();
+	// // chassis.turnTo(0, -27, 2000, false, 80);
+	// chassis.moveToPose(-45.284, -51, -90, 1500, {.maxSpeed=90});
+	// chassis.waitUntilDone();
+	// toggle_wing_right();
+	// // chassis.waitUntil(10);
 	// // chassis.turnTo(0, -57, 1000, false);
-	// chassis.moveToPoint(-8.3, -57, 2000, false, 127);
-	// chassis.moveToPoint(-38, -58, 25000, true, 127);
-	// chassis.turnTo(0, -57, 1000);
 	// intake_motor.move(-127);
-	// chassis.moveToPoint(-8.3, -57, 2000);
-	// delay(2000);
+	// chassis.moveToPose(-11, -60, 90, 5000, {.maxSpeed=90});
+	// delay(5000);
 	// intake_motor.move(0);
 	// END Shooter side safe AWP (quals)
 
@@ -288,27 +290,30 @@ void autonomous() {
 	// chassis.setPose(-36, -54, 0);
 	// toggle_wing_right();
 	// intake_motor.move(-127);
-	// chassis.moveToPoint(-25.5, -7.5, 2000, true, 127);
+	// chassis.moveToPoint(-26.073, -9.424, 2000, true, 127);
 	// delay(250);
 	// toggle_wing_right();
 	// delay(750);
 	// intake_motor.move(0);
-	// chassis.waitUntil(25);
+	// chassis.waitUntil(15);
 	// intake_motor.move(127);
 	// chassis.waitUntilDone();
 	// delay(250);
-	// chassis.moveToPoint(-48, -48, 2600, false, 90.0);
-	// chassis.turnTo(90, -58, 1000, false, 90);
+	// intake_motor.move(45);
+	// chassis.moveToPoint(-36, -55, 2600, false, 90.0);
 	// chassis.waitUntilDone();
-	// chassis.moveToPoint(-8.5, -57, 2000, false, 127);
+	// chassis.turnTo(90, -58, 1000, false, 90);
+	// delay(500);
+	// intake_motor.move(0);
+	// chassis.moveToPoint(-10, -57, 2000, false, 127);
 	// chassis.moveToPoint(-38, -58, 25000, true, 127);
 	// chassis.turnTo(0, -57, 1000); // Adjust this on actual field (pull out ball)
-	// chassis.moveToPoint(-8.5, -57, 2000);
+	// chassis.moveToPoint(-12, -57, 2000);
 	// chassis.waitUntilDone();
 	// intake_motor.move(-127);
 	// delay(1000);
 	// intake_motor.move(0);
-	// chassis.moveToPoint(-50, -50, 3000, false);
+	// chassis.moveToPoint(-50, -55, 3000, false);
 	// END Shooter side auton steal (elim)
 
 
@@ -453,81 +458,173 @@ void autonomous() {
 	// END Push side 6 ball (elims) (safe)
 
 	// Auton Skills
+	// One triball from back, centered in tile
 	// https://i.imgur.com/hMR1VaH.png
 	chassis.setPose(-34.833, -55, 0);
 	intake_motor.move(-127);
-	chassis.moveToPose(-59, -43.5, -115, 1500, {.chasePower=4, .lead=0.2}); // align to matchload bar
+	chassis.moveToPose(-59, -43.5, 250, 1500, {.chasePower=4, .lead=0.2}); // align to matchload bar
 	delay(500);
 	intake_motor.move(0);
+	toggle_wing_left();
 	chassis.tank(30, 0); // keep against bar
-	lemlib::Pose temp_pose = chassis.getPose();
-	cout << "Current pose: " << temp_pose.x << ", " << temp_pose.y << ", " << temp_pose.theta << endl;
 	cata_motor.move(95);
-	delay(29000);
+	delay(27000); // Shoot 44
+	// delay(1000); // Test
 	cata_motor.move(0);
-	chassis.setPose(-59, -43.5, -115);
-	temp_pose = chassis.getPose();
-	cout << "Current pose: " << temp_pose.x << ", " << temp_pose.y << ", " << temp_pose.theta << endl;
+	chassis.setPose(-59, -43.5, 250);
 	// Print current position
 
-	chassis.moveToPose(-58.962, -27, -180, 3000, {.forwards=false, .chasePower=15, .lead=0.3, .minSpeed=120}); // ram alliance balls
-	chassis.moveToPose(-34.833, -66, 0, 2000, {.chasePower=8, .lead=0.5, .minSpeed=120}); // back to start ish
-	chassis.turnTo(-34.833, 0, 300); // make sure it turns long way
-	chassis.turnTo(-70, -60, 900); // turn to face alley
-	chassis.moveToPose(35, -64, -90, 3000, {.forwards=false, .chasePower=15, .lead=0.2, .minSpeed=90}); // go through alley
-	chassis.waitUntil(85);
-	chassis.moveToPose(59.422, -29.593, -180, 2000, {.forwards=false, .chasePower=10, .lead=0.3, .minSpeed=60}); // ram side with back
-	chassis.waitUntilDone();
-	chassis.tank(127, 127);
-	delay(300);
-	chassis.turnTo(59.422, 0, 500);
-	chassis.tank(-127, -127);
-	delay(1000);
-	chassis.tank(127, 127);
-	delay(550);
-	chassis.tank(-127, -127);
-	delay(1000);
-	chassis.tank(0, 0);
-	// chassis.moveToPoint(59.422, -44.5, 2000); // backup from net
-	// chassis.moveToPose(59.422, -44.5, -180, 3000, {.chasePower=15, .lead=0.5}); // backup from net
-	// chassis.moveToPose(59.422, 0, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.5}); // ram side with back
-	chassis.moveToPoint(59.422, -44.5, 2000); // backup from net
-	// chassis.moveToPose(59.422, -44.5, -180, 3000, {.chasePower=15, .lead=0.5}); // backup from net
-	chassis.moveToPose(40.941, -40.756, 270, 2000, {.chasePower=15, .lead=0.3}); // Move away from net and toward center
-	chassis.moveToPose(12, -19, -90, 2000, {.chasePower=15, .lead=0.25}); // Move toward center
-	chassis.waitUntilDone();
-	toggle_wings(); // Get ready to push into net
-	chassis.tank(-127, -127);
-	delay(1500);
-	chassis.tank(0, 0);
-	// chassis.moveToPose(60, -19, -90, 1500, {.forwards=false, .chasePower=15, .lead=0.5}); // Push all into net
-	// chassis.waitUntilDone();
-	chassis.moveToPose(12, -8, -90, 3000, {.chasePower=15, .lead=0.5}); // Back up for next push
-	delay(150); // Keep the wings open for a little longer before closing 
-	toggle_wings(); // Close wings
-	chassis.waitUntilDone();
-	toggle_wings(); // Once backed up, open wings again
-	chassis.tank(-127, -127);
-	delay(1500);
-	chassis.tank(0, 0);
-	delay(150); // Keep the wings open for a little longer before closing
-	toggle_wings(); // Close wings
-	// chassis.moveToPose(60, 0.102, -90, 1500, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // second push
-	// chassis.waitUntilDone();
-	chassis.moveToPose(12, 15.177, -90, 3000, {.chasePower=15, .lead=0.5}); // Back up for next push
-	chassis.moveToPose(37.5, 38.99, -10, 2500, {.chasePower=15, .lead=0.5}); // Move to side of field
-	chassis.waitUntilDone();
-	chassis.moveToPose(45.394, 22.467, 180, 2000, {.chasePower=15, .lead=0.5}); // shove in side
+	chassis.moveToPose(-58.962, -27, -180, 1000, {.forwards=false, .chasePower=15, .lead=0.3}); // ram alliance balls
+	chassis.moveToPose(-34.833, -58, 0, 1500, {.chasePower=8, .lead=0.5, .minSpeed=120}); // back to start ish
+	// chassis.turnTo(-34.833, 0, 300); // make sure it turns long way
+	chassis.turnTo(70, -57, 900); // turn to face alley (with front)
+	toggle_wing_right();
 
-	chassis.tank(-127, -127);
-	delay(300);
+	chassis.moveToPose(35, -57, 90, 2500, {.chasePower=15, .lead=0.2}); // go through alley
+	chassis.waitUntilDone();
+	// toggle_wings();
+	toggle_wing_left();
+
+	chassis.turnTo(35, -32.688, 350);
+	chassis.waitUntilDone();
+	toggle_wing_right();
+	wing_global_state = false;
+	chassis.turnTo(58.686, -43.5, 850, false); // Turn for corner
+	chassis.waitUntilDone();
+	toggle_back_wing();
+	chassis.moveToPoint(58.686, -43.5, 1000, false); // Move toward wall
+	chassis.turnTo(60.559, -31.526, 1000, false); // Turn into net
+	chassis.waitUntilDone();
 	chassis.tank(127, 127);
-	delay(1200);
-	chassis.tank(127, 127);
 	delay(300);
-	chassis.tank(-127, -127);
+	chassis.tank(-127, -127); // Ram into net
+	delay(900);
+	chassis.tank(0, 0);
+	// chassis.tank(127, 127);
+	// delay(100);
+	chassis.moveToPoint(59.459, -44.998, 900); // Move away from net
+	toggle_back_wing();
+	chassis.turnTo(23.049, -37.336, 1000);
+	chassis.moveToPoint(23.049, -37.336, 1000); // Move toward center
+	// chassis.waitUntilDone();
+	// toggle_wing_left();
+	// chassis.moveToPose(20.337, -23.391, 50, 1000, {.lead=0.1, .maxSpeed=127, .minSpeed=50});
+	// chassis.moveToPoint(20.337, -23.391, 1000); // feb 20 commented
+	// chassis.waitUntilDone();
+	// toggle_wing_right();
+	// wing_global_state=true;
+	chassis.turnTo(40.738, -12.5, 600);
+	chassis.waitUntilDone();
+	toggle_wings();
+	chassis.moveToPose(40.738, -12.5, 90, 1000, {.lead=0.6}); // Push into front net
+	chassis.turnTo(40.738, -12.5, 500);
+	chassis.waitUntilDone();
+	chassis.tank(127, 127); // Ram front again
 	delay(1200);
 	chassis.tank(0, 0);
+	toggle_wings();
+	chassis.turnTo(8, -27, 1100, false);
+	chassis.moveToPoint(9, -27, 1800, false, 100); // Move away from net
+	chassis.turnTo(9, 35.487, 950, false); // turn to other side
+	chassis.moveToPoint(9, 35.487, 1700, false, 100); // Go to the other side
+	chassis.waitUntilDone();
+	toggle_wings();
+	chassis.moveToPose(40.48, 7.5, 90, 1500, {.chasePower=15, .lead=0.3}); // Push again
+	chassis.moveToPoint(25, 7.5, 1000, false);
+	chassis.waitUntilDone();
+	chassis.tank(127, 127);
+	delay(900);
+	chassis.tank(0, 0);
+	toggle_wings();
+	chassis.moveToPoint(25.6, 7.5, 1000, false); // Backup from net
+	chassis.turnTo(38.8, 42.217, 1000);
+	chassis.waitUntilDone();
+	delay(500);
+	toggle_wings(); // Open
+	chassis.moveToPoint(38.8, 42.217, 1200); // Go to other side
+	chassis.turnTo(56.749, 42.406, 1000);
+	chassis.waitUntilDone();
+	// chassis.moveToPose(59.46, 28.203, 180, 1500, {.chasePower=15, .lead=0.3});
+	chassis.moveToPoint(56.749, 42.406, 1000); // Align to side of net kinda
+	chassis.moveToPoint(59.46, 28.203, 1000); // Push into side net
+	chassis.waitUntilDone();
+	toggle_wings();
+	wing_global_state = false;
+	// chassis.tank(127, 127);
+	// delay(600);
+	// chassis.tank(0, 0);
+	chassis.moveToPoint(56.749, 42.406, 900, false); // Align to side of net kinda
+	chassis.turnTo(59.46, 28.203, 1000, false);
+	chassis.waitUntilDone();
+	chassis.tank(-127, -127);
+	delay(1000);
+	chassis.tank(127, 127);
+	delay(300);
+	chassis.tank(-127, -127);
+	delay(1000);
+	chassis.tank(0, 0);
+	// END Auton skills
+
+
+
+
+
+	// chassis.moveToPoint(58.686, -39.247, 900); // backup from side
+	// chassis.moveToPoint(58.686, -29.847, 900, false); // Ram into side
+	// chassis.moveToPoint(58.686, -39.247, 900); // backup from side
+
+
+	
+
+	// chassis.moveToPose(59.422, -29.593, -180, 2000, {.forwards=false, .chasePower=10, .lead=0.3, .minSpeed=60}); // ram side with back
+	
+	// chassis.tank(127, 127);
+	// delay(300);
+	// chassis.turnTo(59.422, 0, 500);
+	// chassis.tank(127, 127);
+	// delay(550);
+	// chassis.tank(-127, -127);
+	// delay(1000);
+	// // chassis.moveToPoint(59.422, -44.5, 2000); // backup from net
+	// // chassis.moveToPose(59.422, -44.5, -180, 3000, {.chasePower=15, .lead=0.5}); // backup from net
+	// // chassis.moveToPose(59.422, 0, -180, 1500, {.forwards=false, .chasePower=15, .lead=0.5}); // ram side with back
+	// chassis.moveToPoint(59.422, -44.5, 2000); // backup from net
+	// // chassis.moveToPose(59.422, -44.5, -180, 3000, {.chasePower=15, .lead=0.5}); // backup from net
+	// chassis.moveToPose(40.941, -40.756, 270, 2000, {.chasePower=15, .lead=0.3}); // Move away from net and toward center
+	// chassis.moveToPose(12, -19, -90, 2000, {.chasePower=15, .lead=0.25}); // Move toward center
+	// chassis.waitUntilDone();
+	// toggle_wings(); // Get ready to push into net
+	// chassis.tank(-127, -127);
+	// delay(1500);
+	// chassis.tank(0, 0);
+	// // chassis.moveToPose(60, -19, -90, 1500, {.forwards=false, .chasePower=15, .lead=0.5}); // Push all into net
+	// // chassis.waitUntilDone();
+	// chassis.moveToPose(12, -8, -90, 3000, {.chasePower=15, .lead=0.5}); // Back up for next push
+	// delay(150); // Keep the wings open for a little longer before closing 
+	// toggle_wings(); // Close wings
+	// chassis.waitUntilDone();
+	// toggle_wings(); // Once backed up, open wings again
+	// chassis.tank(-127, -127);
+	// delay(1500);
+	// chassis.tank(0, 0);
+	// delay(150); // Keep the wings open for a little longer before closing
+	// toggle_wings(); // Close wings
+	// // chassis.moveToPose(60, 0.102, -90, 1500, {.forwards=false, .chasePower=15, .lead=0.4, .minSpeed=120}); // second push
+	// // chassis.waitUntilDone();
+	// chassis.moveToPose(12, 15.177, -90, 3000, {.chasePower=15, .lead=0.5}); // Back up for next push
+	// chassis.moveToPose(37.5, 38.99, -10, 2500, {.chasePower=15, .lead=0.5}); // Move to side of field
+	// chassis.waitUntilDone();
+	// chassis.moveToPose(45.394, 22.467, 180, 2000, {.chasePower=15, .lead=0.5}); // shove in side
+
+	// chassis.tank(-127, -127);
+	// delay(300);
+	// chassis.tank(127, 127);
+	// delay(1200);
+	// chassis.tank(127, 127);
+	// delay(300);
+	// chassis.tank(-127, -127);
+	// delay(1200);
+	// chassis.tank(0, 0);
 
 
 
@@ -547,29 +644,24 @@ void autonomous() {
 void skills_beginning_auton() {
 	chassis.setPose(-34.833, -55, 0);
 	intake_motor.move(-127);
-	chassis.moveToPose(-59, -43.5, -115, 1500, {.chasePower=4, .lead=0.2}); // align to matchload bar
+	chassis.moveToPose(-59, -43.5, 250, 1500, {.chasePower=4, .lead=0.2}); // align to matchload bar
 	delay(500);
 	intake_motor.move(0);
+	toggle_wing_left();
 	chassis.tank(30, 0); // keep against bar
-	lemlib::Pose temp_pose = chassis.getPose();
-	cout << "Current pose: " << temp_pose.x << ", " << temp_pose.y << ", " << temp_pose.theta << endl;
 	cata_motor.move(95);
-	delay(29000);
+	delay(28000); // Shoot 44
+	// delay(5000); // Test
 	cata_motor.move(0);
-	chassis.setPose(-59, -43.5, -115);
-	temp_pose = chassis.getPose();
-	cout << "Current pose: " << temp_pose.x << ", " << temp_pose.y << ", " << temp_pose.theta << endl;
+	chassis.setPose(-59, -43.5, 250);
 	// Print current position
 
-	chassis.moveToPose(-58.962, -27, -180, 3000, {.forwards=false, .chasePower=15, .lead=0.3, .minSpeed=120}); // ram alliance balls
+	chassis.moveToPose(-58.962, -27, -180, 1000, {.forwards=false, .chasePower=15, .lead=0.3}); // ram alliance balls
 }
 
 void opcontrol() {
 
 	// If blocker is up, put it down
-	if (blocker_state) {
-		toggle_blocker();
-	}
 
 	// SKILLS!!!!
 	skills_beginning_auton();
@@ -620,19 +712,23 @@ void opcontrol() {
 			intake_motor.move(0);
 		}
 
-		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-			toggle_blocker();
-		}
-
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
-			blocker_state = true;
-			blocker_cylinders.set_value(blocker_state);
 			toggle_passive_hang();
 		}
 
-		// if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT)) {
-		// 	toggle_side_hang();
-		// }
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT)) {
+			toggle_wing_left();
+		}
+
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+			toggle_wing_right();
+		}
+
+
+
+		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+			toggle_back_wing();
+		}
 
 		if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
 			toggle_wings();

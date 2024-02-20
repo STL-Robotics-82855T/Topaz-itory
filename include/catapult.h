@@ -17,7 +17,7 @@ public:
 			// FIGURE OUT START ANGLE OF CATAPULT (exact value)
 			if (cata_button_held) {
 				// cata_motor.move(105);
-				cata_motor.move(110);
+				cata_motor.move(95);
 			}
 			else {
 				cata_motor.move(0);
