@@ -291,3 +291,33 @@
 	// drive_line_auton(-20);
 
 
+
+// Shooter side auton steal (elim)
+	// chassis.setPose(-36, -54, 0);
+	// toggle_wing_right();
+	// intake_motor.move(-127);
+	// chassis.moveToPoint(-26.073, -9.424, 2000, true, 127);
+	// delay(250);
+	// toggle_wing_right();
+	// delay(750);
+	// intake_motor.move(0);
+	// chassis.waitUntil(15);
+	// intake_motor.move(127);
+	// chassis.waitUntilDone();
+	// delay(250);
+	// intake_motor.move(45);
+	// chassis.moveToPoint(-36, -55, 2600, false, 90.0);
+	// chassis.waitUntilDone();
+	// chassis.turnTo(90, -58, 1000, false, 90);
+	// delay(500);
+	// intake_motor.move(0);
+	// chassis.moveToPoint(-10, -57, 2000, false, 127);
+	// chassis.moveToPoint(-38, -58, 25000, true, 127);
+	// chassis.turnTo(0, -57, 1000); // Adjust this on actual field (pull out ball)
+	// chassis.moveToPoint(-12, -57, 2000);
+	// chassis.waitUntilDone();
+	// intake_motor.move(-127);
+	// delay(1000);
+	// intake_motor.move(0);
+	// chassis.moveToPoint(-50, -55, 3000, false);
+	// END Shooter side auton steal (elim)
